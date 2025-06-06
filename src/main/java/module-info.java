@@ -3,6 +3,8 @@ module ucr.lab.proyectogrupo5 {
     requires javafx.fxml;
 
 
-    opens ucr.lab.proyectogrupo5 to javafx.fxml;
-    exports ucr.lab.proyectogrupo5;
+    opens ucr.lab.app to javafx.fxml;
+    exports ucr.lab.app;
+    exports controller;
+    opens controller to javafx.fxml;
 }
