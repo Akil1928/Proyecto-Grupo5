@@ -1,4 +1,5 @@
 package datastructure;
 
-public class LinkedQueue <T>{
+public class LinkedQueue<T> {
+
 }
