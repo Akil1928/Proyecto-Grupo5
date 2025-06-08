@@ -1,7 +1,7 @@
 module ucr.lab.proyectogrupo5 {
     requires javafx.controls;
     requires javafx.fxml;
-    requires java.base;
+    requires com.google.gson;
 
     opens ucr.lab.app to javafx.fxml;
     exports ucr.lab.app;
