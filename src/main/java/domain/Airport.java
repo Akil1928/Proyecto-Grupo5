@@ -2,6 +2,8 @@ package domain;
 
 import datastructure.list.SinglyLinkedList;
 
+import java.util.Objects;
+
 public class Airport {
     private int code;
     private String name, country;
