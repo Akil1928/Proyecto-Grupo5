@@ -98,13 +98,13 @@ public class AdjacencyListGraph implements Graph {
     }
 
     private void updateEdgesListEdgeWeight(Object a, Object b, Object weight) throws ListException {
-        EdgeWeight ew = (EdgeWeight) vertexList[indexOf(a)].edgesList
-                .getNode(new EdgeWeight(b, null)).getData();
-        //setteo el peso en el campo respectivo
-        ew.setWeight(weight);
-        //ahora actualizo la info en la lista de aristas correspondiente
-        vertexList[indexOf(a)].edgesList.getNode(new EdgeWeight(b, null))
-                .setData(ew);
+//        EdgeWeight ew = (EdgeWeight) vertexList[indexOf(a)].edgesList
+//                .getNode(new EdgeWeight(b, null)).getData();
+//        //setteo el peso en el campo respectivo
+//        ew.setWeight(weight);
+//        //ahora actualizo la info en la lista de aristas correspondiente
+//        vertexList[indexOf(a)].edgesList.getNode(new EdgeWeight(b, null))
+//                .setData(ew);
     }
 
     @Override

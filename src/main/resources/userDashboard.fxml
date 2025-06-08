@@ -11,44 +11,34 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminDashboardController">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.UserDashboardController">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
                 <Menu mnemonicParsing="false" text="Aeropuertos">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Crear Aeropuerto" />
                         <MenuItem mnemonicParsing="false" text="Listar Aeropuertos" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Rutas">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Crear Ruta" />
-                        <MenuItem mnemonicParsing="false" text="Modificar Ruta" />
-                        <MenuItem mnemonicParsing="false" text="Calcular Ruta más corta" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Pasajeros">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Registro de Pasajeros" />
-                        <MenuItem mnemonicParsing="false" text="Histórico de Vuelos" />
+                        <MenuItem mnemonicParsing="false" text="Ver Rutas" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Vuelos">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Crear Vuelo" />
-                        <MenuItem mnemonicParsing="false" text="Asignar Pasajeros" />
+                        <MenuItem mnemonicParsing="false" text="Consultar Vuelos" />
+                        <MenuItem mnemonicParsing="false" text="Comprar Tickets" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Reportes">
+                <Menu mnemonicParsing="false" text="Pasajeros">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Estadísticas" />
-                        <MenuItem mnemonicParsing="false" text="Generar PDF" />
+                        <MenuItem mnemonicParsing="false" text="Mi Perfil" />
+                        <MenuItem mnemonicParsing="false" text="Mis Vuelos" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Sistema">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Administrar Usuarios" />
                         <MenuItem mnemonicParsing="false" text="Cerrar Sesión" onAction="#handleLogout" />
                     </items>
                 </Menu>
@@ -58,7 +48,7 @@
     <center>
         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
             <children>
-                <Label text="Panel de Administrador">
+                <Label text="Panel de Usuario">
                     <font>
                         <Font name="System Bold" size="24.0" />
                     </font>

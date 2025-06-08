@@ -1,20 +1,11 @@
 package datastructure.list;
 
-public class Node {
-    public Object data;
-    public Node prev; //apuntador al nodo anterior
-    public Node next; //apuntador al nodo siguiente
+public class Node<T> {
+    public T data;
+    public Node<T> next;
 
-    public Node(Object data) {
+    public Node(T data) {
         this.data = data;
-        this.prev = this.next = null;
-    }
-
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
+        this.next = null;
     }
 }
