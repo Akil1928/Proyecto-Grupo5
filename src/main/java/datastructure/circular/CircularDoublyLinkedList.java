@@ -48,6 +48,16 @@ public class CircularDoublyLinkedList implements List {
     }
 
     @Override
+    public Object get(int index) throws ListException {
+        return null;
+    }
+
+    @Override
+    public void set(int index, Object element) throws ListException {
+
+    }
+
+    @Override
     public void add(Object element) {
         Node newNode = new Node(element);
         if(isEmpty())

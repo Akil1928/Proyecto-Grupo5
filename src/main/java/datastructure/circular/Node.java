@@ -1,19 +1,37 @@
 package datastructure.circular;
 
-public class Node {
-    public Object data;
-    public Node prev; //apuntador al nodo anterior
-    public Node next; //apuntador al nodo siguiente
+public class Node<T> {
+    public T data;
+    Node<T> next;
+    Node<T> prev;
 
-    //Constructor 1
-    public Node(Object data) {
+    public Node(T data) {
         this.data = data;
-        this.prev = this.next = null; //puntero al sgte nodo es nulo por default
+        this.next = null;
+        this.prev = null;
     }
 
-    //Constructor 2
-    public Node() {
-        this.prev = this.next = null;
+    public T getData() {
+        return data;
     }
 
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public Node<T> getNext() {
+        return next;
+    }
+
+    public void setNext(Node<T> next) {
+        this.next = next;
+    }
+
+    public Node<T> getPrev() {
+        return prev;
+    }
+
+    public void setPrev(Node<T> prev) {
+        this.prev = prev;
+    }
 }

@@ -1,81 +1,54 @@
 package datastructure.circular;
 
-public class DoublyLinkedList implements List {
-    private Node first; //apuntador al inicio de la lista
+public class DoublyLinkedList<T> implements List<T> {
+    private Node<T> first;
+    private Node<T> last;
+    private int size;
 
-    //Constructor
-    public DoublyLinkedList(){
+    public DoublyLinkedList() {
         this.first = null;
+        this.last = null;
+        this.size = 0;
     }
 
     @Override
-    public int size() throws ListException {
-        if(isEmpty())
-            throw new ListException("Doubly Linked List is empty");
-        int counter = 0; //contador de nodos
-        Node aux = first; //aux para moverme por la lista y no perder el puntero al inicio
-        while(aux!=null){
-            counter++;
-            aux = aux.next;
-        }
-        return counter;
+    public int size() {
+        return size;
     }
 
     @Override
     public void clear() {
-        this.first = null; //anula la lista
+        this.first = null;
+        this.last = null;
+        this.size = 0;
     }
 
     @Override
     public boolean isEmpty() {
-        return first ==null;
+        return first == null;
     }
 
     @Override
-    public boolean contains(Object element) throws ListException {
-        if(isEmpty())
-            throw new ListException("Doubly Linked List is empty");
-        Node aux = first;
-        while(aux!=null){
-            if(util.Utility.compare(aux.data, element)==0) return true; //ya lo encontro
-            aux = aux.next; //muevo aux al nodo sgte
+    public void add(T element) {
+        Node<T> newNode = new Node<>(element);
+        if (isEmpty()) {
+            first = last = newNode;
+        } else {
+            newNode.setPrev(last);
+            last.setNext(newNode);
+            last = newNode;
         }
-        return false; //significa que no encontro el elemento
-    }
-
-    @Override
-    public void add(Object element) {
-        Node newNode = new Node(element);
-        if(isEmpty())
-            first = newNode;
-        else{
-            Node aux = first; //aux para moverme por la lista y no perder el puntero al inicio
-            while(aux.next!=null){
-                aux = aux.next; //mueve aux al nodo sgte
-            }
-            //se sale del while cuando aux esta en el ult nodo
-            aux.next = newNode;
-            //hago el doble enlace
-            newNode.prev = aux;
-        }
+        size++;
     }
 
     @Override
     public void addFirst(Object element) {
-        Node newNode = new Node(element);
-        if(isEmpty())
-            first = newNode;
-        else{
-            newNode.next = first;
-            //hago el doble enlace
-            first.prev = newNode;
-            first = newNode;
-        }
+
     }
 
     @Override
     public void addLast(Object element) {
-        add(element);
+
     }
 
     @Override
@@ -84,44 +57,114 @@ public class DoublyLinkedList implements List {
     }
 
     @Override
-    public void remove(Object element) throws ListException {
-        if(isEmpty())
-            throw new ListException("Doubly Linked List is empty");
-        //Caso 1: El elemento a suprimir es el primero de la lista
-        if(util.Utility.compare(first.data, element)==0) {
-            first = first.next;
-            first.prev = null; //actualizo el enlace al nodo anteior
+    public void remove(T element) throws ListException {
+        if (isEmpty()) {
+            throw new ListException("The list is empty");
         }
-        //Caso 2. El elemento puede estar en el medio o al final
-        else{
-            Node prev = first; //nodo anterior
-            Node aux = first.next; //nodo sgte
-            while(aux!=null && !(util.Utility.compare(aux.data, element)==0)){
-                prev = aux;
-                aux = aux.next;
+
+        // Si el elemento a eliminar es el primero
+        if (util.Utility.compare(first.getData(), element) == 0) {
+            first = first.getNext();
+            if (first != null) {
+                first.setPrev(null);
+            } else {
+                last = null;
             }
-            //se sale del while cuanda alcanza nulo
-            //o cuando encuentra el elemento
-            if(aux!=null && util.Utility.compare(aux.data, element)==0){
-                //debo desenlazar  el nodo
-                prev.next = aux.next;
-                //mantengo el doble enlace
-                if(aux.next!=null)
-                    aux.next.prev = prev;
-            }
+            size--;
+            return;
         }
+
+        // Si el elemento a eliminar es el último
+        if (util.Utility.compare(last.getData(), element) == 0) {
+            last = last.getPrev();
+            if (last != null) {
+                last.setNext(null);
+            } else {
+                first = null;
+            }
+            size--;
+            return;
+        }
+
+        // Si el elemento está en medio de la lista
+        Node<T> current = first.getNext();
+        while (current != null) {
+            if (util.Utility.compare(current.getData(), element) == 0) {
+                current.getPrev().setNext(current.getNext());
+                if (current.getNext() != null) {
+                    current.getNext().setPrev(current.getPrev());
+                }
+                size--;
+                return;
+            }
+            current = current.getNext();
+        }
+
+        throw new ListException("Element not found in the list");
+    }
+
+    @Override
+    public boolean contains(T element) throws ListException {
+        if (isEmpty()) {
+            throw new ListException("The list is empty");
+        }
+
+        Node<T> current = first;
+        while (current != null) {
+            if (util.Utility.compare(current.getData(), element) == 0) {
+                return true;
+            }
+            current = current.getNext();
+        }
+
+        return false;
+    }
+
+    @Override
+    public T get(int index) throws ListException {
+        if (isEmpty()) {
+            throw new ListException("The list is empty");
+        }
+
+        if (index < 0 || index >= size) {
+            throw new ListException("Index out of bounds");
+        }
+
+        Node<T> current = first;
+        int i = 0;
+
+        while (i < index) {
+            current = current.getNext();
+            i++;
+        }
+
+        return current.getData();
+    }
+
+    @Override
+    public void set(int index, T element) throws ListException {
+        if (isEmpty()) {
+            throw new ListException("The list is empty");
+        }
+
+        if (index < 0 || index >= size) {
+            throw new ListException("Index out of bounds");
+        }
+
+        Node<T> current = first;
+        int i = 0;
+
+        while (i < index) {
+            current = current.getNext();
+            i++;
+        }
+
+        current.setData(element);
     }
 
     @Override
     public Object removeFirst() throws ListException {
-        if(isEmpty())
-            throw new ListException("Doubly Linked List is empty");
-        Object value = first.data;
-        first = first.next; //movemos el apuntador al nodo sgte
-        //rompo el doble enlace
-        if(first!=null)
-            first.prev = null;
-        return value;
+        return null;
     }
 
     @Override
@@ -135,24 +178,28 @@ public class DoublyLinkedList implements List {
     }
 
     @Override
-    public int indexOf(Object element) throws ListException {
-        if(isEmpty())
-            throw new ListException("Doubly Linked List is empty");
-        Node aux = first;
-        int index = 1; //el primer indice de la lista es 1
-        while(aux!=null){
-            if(util.Utility.compare(aux.data, element)==0) return index;
-            index++;
-            aux = aux.next;
+    public int indexOf(T element) throws ListException {
+        if (isEmpty()) {
+            throw new ListException("The list is empty");
         }
-        return -1; //significa q el elemento no existe en la lista
+
+        Node<T> current = first;
+        int index = 0;
+
+        while (current != null) {
+            if (util.Utility.compare(current.getData(), element) == 0) {
+                return index;
+            }
+            current = current.getNext();
+            index++;
+        }
+
+        return -1; // Element not found
     }
 
     @Override
     public Object getFirst() throws ListException {
-        if(isEmpty())
-            throw new ListException("Doubly Linked List is empty");
-        return first.data;
+        return null;
     }
 
     @Override
@@ -172,29 +219,23 @@ public class DoublyLinkedList implements List {
 
     @Override
     public Node getNode(int index) throws ListException {
-        if(isEmpty())
-            throw new ListException("Doubly Linked List is empty");
-        Node aux = first;
-        int i = 1; //posicion del primer nodo
-        while(aux!=null){
-            if(util.Utility.compare(i, index)==0){
-                return aux;
-            }
-            i++;
-            aux = aux.next; //lo movemos al sgte nodo
-        }
         return null;
     }
 
     @Override
     public String toString() {
-        if(isEmpty()) return "Doubly Linked List is empty";
-        String result = "Doubly Linked List Content\n";
-        Node aux = first; //aux para moverme por la lista y no perder el puntero al inicio
-        while(aux!=null){
-            result+=aux.data+" ";
-            aux = aux.next; //lo muevo al sgte nodo
+        if (isEmpty()) {
+            return "Empty list";
         }
-        return result;
+
+        StringBuilder sb = new StringBuilder();
+        Node<T> current = first;
+
+        while (current != null) {
+            sb.append(current.getData().toString()).append("\n");
+            current = current.getNext();
+        }
+
+        return sb.toString();
     }
 }

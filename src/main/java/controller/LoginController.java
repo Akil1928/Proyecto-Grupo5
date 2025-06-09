@@ -31,17 +31,15 @@ public class LoginController {
     @FXML
     public void initialize() {
         userManager = UserManager.getInstance();
+        System.out.println("Login controller initialized");
     }
 
     @FXML
     private void handleLogin(ActionEvent event) {
-        System.out.println("Botón de login presionado"); // Log para depuración
+        System.out.println("Login button clicked");
 
         String username = usernameField.getText();
         String password = passwordField.getText();
-
-        System.out.println("Usuario: " + username); // Log para depuración
-        System.out.println("Contraseña: " + password); // Log para depuración
 
         if (username.isEmpty() || password.isEmpty()) {
             showAlert("Error", "Campos vacíos", "Por favor ingrese usuario y contraseña.");
@@ -49,18 +47,17 @@ public class LoginController {
         }
 
         User authenticatedUser = userManager.authenticate(username, password);
-        System.out.println("Usuario autenticado: " + (authenticatedUser != null ? authenticatedUser.getName() : "null")); // Log para depuración
+        System.out.println("Autenticación para: " + username + " resultado: " +
+                (authenticatedUser != null ? "exitosa (rol: " + authenticatedUser.getRole() + ")" : "fallida"));
 
         if (authenticatedUser != null) {
             try {
                 // Cargar la pantalla principal según el rol del usuario
                 String fxmlFile = userManager.isCurrentUserAdmin() ?
-                        "/dashboard.fxml" :
-                        "/userdashboard.fxml";
+                        "/dashboard.fxml" : "/userdashboard.fxml";
 
-                System.out.println("Intentando cargar: " + fxmlFile); // Log para depuración
+                System.out.println("Cargando vista: " + fxmlFile);
 
-                // Usamos getClass().getResource() para cargar desde el classpath
                 Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlFile)));
 
                 // Obtener la ventana actual
@@ -77,15 +74,15 @@ public class LoginController {
                 stage.setResizable(true);
                 stage.show();
 
-                System.out.println("Vista cargada con éxito"); // Log para depuración
+                System.out.println("Vista cargada con éxito");
             } catch (IOException e) {
                 e.printStackTrace();
-                System.err.println("Error al cargar la vista: " + e.getMessage()); // Log para depuración
+                System.err.println("Error cargando vista: " + e.getMessage());
                 showAlert("Error", "Error de navegación",
                         "No se pudo cargar la siguiente pantalla: " + e.getMessage());
             }
         } else {
-            showAlert("Error de Autenticación", "Credenciales inválidas",
+            showAlert("Error de autenticación", "Credenciales inválidas",
                     "Usuario o contraseña incorrectos.");
         }
     }

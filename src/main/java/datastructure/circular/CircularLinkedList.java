@@ -1,6 +1,6 @@
 package datastructure.circular;
 
-public class CircularLinkedList implements List {
+public class CircularLinkedList <T> implements List <T>{
     private Node first; //apuntador al inicio de la lista
     private Node last; //apuntador al ultimo nodo de la lista
 
@@ -31,6 +31,16 @@ public class CircularLinkedList implements List {
     @Override
     public boolean isEmpty() {
         return first == null;
+    }
+
+    @Override
+    public T get(int index) throws ListException {
+        return null;
+    }
+
+    @Override
+    public void set(int index, T element) throws ListException {
+
     }
 
     @Override

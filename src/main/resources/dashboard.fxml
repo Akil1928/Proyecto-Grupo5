@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminDashboardController">
     <top>
@@ -17,8 +17,8 @@
             <menus>
                 <Menu mnemonicParsing="false" text="Aeropuertos">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Crear Aeropuerto" />
-                        <MenuItem mnemonicParsing="false" text="Listar Aeropuertos" />
+                        <MenuItem mnemonicParsing="false" text="Gestionar Aeropuertos" onAction="#handleManageAirports" />
+                        <MenuItem mnemonicParsing="false" text="Listar Aeropuertos" onAction="#handleManageAirports" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Rutas">

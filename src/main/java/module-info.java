@@ -14,4 +14,10 @@ module ucr.lab.proyectogrupo5 {
 
     opens domain to javafx.base;
     exports domain;
+
+    opens datastructure.circular to javafx.fxml;
+    exports datastructure.circular;
+
+    opens services to javafx.fxml;
+    exports services;
 }

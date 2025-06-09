@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import security.UserManager;
 
@@ -12,6 +13,9 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class AdminDashboardController {
+
+    @FXML
+    private BorderPane mainPane;
 
     private UserManager userManager;
 
@@ -27,6 +31,16 @@ public class AdminDashboardController {
     }
 
     @FXML
+    public void handleManageAirports(ActionEvent event) {
+        try {
+            Parent airportView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/airport.fxml")));
+            mainPane.setCenter(airportView);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     public void handleLogout(ActionEvent event) {
         try {
             // Cerrar sesión
@@ -36,7 +50,7 @@ public class AdminDashboardController {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/login.fxml")));
 
             // Obtener el stage actual desde el evento
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            Stage stage = (Stage) mainPane.getScene().getWindow();
 
             Scene scene = new Scene(root, 400, 300);
             stage.setTitle("Sistema de Gestión de Aeropuertos - Login");

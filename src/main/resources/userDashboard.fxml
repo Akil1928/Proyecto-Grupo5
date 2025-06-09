@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.UserDashboardController">
     <top>
@@ -17,24 +17,19 @@
             <menus>
                 <Menu mnemonicParsing="false" text="Aeropuertos">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Listar Aeropuertos" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Rutas">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Ver Rutas" />
+                        <MenuItem mnemonicParsing="false" text="Ver Aeropuertos" onAction="#handleViewAirports" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Vuelos">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Consultar Vuelos" />
-                        <MenuItem mnemonicParsing="false" text="Comprar Tickets" />
+                        <MenuItem mnemonicParsing="false" text="Consultar Vuelos" onAction="#handleViewFlights" />
+                        <MenuItem mnemonicParsing="false" text="Comprar Boletos" onAction="#handleBuyTickets" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Pasajeros">
+                <Menu mnemonicParsing="false" text="Mi Perfil">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Mi Perfil" />
-                        <MenuItem mnemonicParsing="false" text="Mis Vuelos" />
+                        <MenuItem mnemonicParsing="false" text="Información Personal" onAction="#handleMyProfile" />
+                        <MenuItem mnemonicParsing="false" text="Mis Vuelos" onAction="#handleMyFlights" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Sistema">
@@ -48,7 +43,7 @@
     <center>
         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
             <children>
-                <Label text="Panel de Usuario">
+                <Label text="Portal del Usuario">
                     <font>
                         <Font name="System Bold" size="24.0" />
                     </font>
@@ -59,6 +54,14 @@
                     </font>
                     <VBox.margin>
                         <Insets top="20.0" />
+                    </VBox.margin>
+                </Label>
+                <Label fx:id="welcomeLabel" text="Seleccione una opción del menú para comenzar">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <VBox.margin>
+                        <Insets top="10.0" />
                     </VBox.margin>
                 </Label>
             </children>
