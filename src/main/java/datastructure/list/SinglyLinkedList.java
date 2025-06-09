@@ -9,8 +9,8 @@ public class SinglyLinkedList<T> implements List<T> {
 
     @Override
     public int size() throws ListException {
-        if(isEmpty()){
-            throw new ListException("Singly Linked List is empty");
+        if (isEmpty()) {
+            return 0;  // Si está vacía, simplemente retornamos 0
         }
         Node<T> aux = first;
         int count=0;

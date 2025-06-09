@@ -60,7 +60,11 @@ public class AirportController {
     @FXML
     public void initialize() {
         // Inicializar el gestor de aeropuertos
+        System.out.println("AirportController.initialize: Iniciando...");
         airportService = AirportService.getInstance();
+
+        // Asegurarnos de que hay aeropuertos cargados
+        airportService.printAllAirports();
 
         // Configurar las columnas de la tabla
         codeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
@@ -76,7 +80,7 @@ public class AirportController {
         filterComboBox.setItems(FXCollections.observableArrayList("All", "Active", "Inactive"));
         filterComboBox.getSelectionModel().selectFirst();
 
-        // Configurar la selección de la tabla para llenar los campos del formulario
+        // Configurar la selección de la tabla
         airportTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 codeField.setText(newSelection.getCode());
@@ -84,7 +88,6 @@ public class AirportController {
                 countryField.setText(newSelection.getCountry());
                 statusComboBox.setValue(newSelection.getStatus());
 
-                // Deshabilitar el campo de código para evitar modificarlo
                 codeField.setDisable(true);
                 createButton.setDisable(true);
                 updateButton.setDisable(false);
@@ -93,7 +96,29 @@ public class AirportController {
         });
 
         // Cargar datos iniciales
-        loadAirportData("All");
+        System.out.println("AirportController.initialize: Cargando datos iniciales...");
+        try {
+            loadAirportData("All");
+        } catch (Exception e) {
+            System.err.println("Error cargando datos iniciales: " + e.getMessage());
+            e.printStackTrace();
+
+            // Intentar nuevamente después de un breve retraso
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000);
+                    javafx.application.Platform.runLater(() -> {
+                        try {
+                            loadAirportData("All");
+                        } catch (Exception ex) {
+                            System.err.println("Error en segundo intento de carga: " + ex.getMessage());
+                        }
+                    });
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }).start();
+        }
 
         // Configurar el filtro
         filterComboBox.setOnAction(event -> {
@@ -106,6 +131,8 @@ public class AirportController {
                 loadAirportData("inactive");
             }
         });
+
+        System.out.println("AirportController.initialize: Inicialización completada");
     }
 
     private void loadAirportData(String filter) {
@@ -127,10 +154,11 @@ public class AirportController {
         }
     }
 
-    // El resto de los métodos del controlador no cambian mucho, solo reemplazamos airportManager por airportService
 
     @FXML
     private void handleCreateAirport(ActionEvent event) {
+        System.out.println("AirportController.handleCreateAirport: Intentando crear aeropuerto...");
+
         try {
             String code = codeField.getText();
             String name = nameField.getText();
@@ -138,22 +166,37 @@ public class AirportController {
             String status = statusComboBox.getValue();
 
             if (code.isEmpty() || name.isEmpty() || country.isEmpty() || status == null) {
-                showAlert("Error", "Please fill all fields");
+                showAlert("Error", "Por favor complete todos los campos");
                 return;
             }
 
+            System.out.println("Creando aeropuerto: " + code + " - " + name);
             Airport airport = new Airport(code, name, country, status);
             boolean success = airportService.createAirport(airport);
 
             if (success) {
-                showAlert("Success", "Airport created successfully");
+                showAlert("Éxito", "Aeropuerto creado correctamente");
                 clearForm();
-                loadAirportData(filterComboBox.getValue().equals("All") ? null : filterComboBox.getValue().toLowerCase());
+
+                // Recargar los datos en la tabla
+                String currentFilter = filterComboBox.getValue();
+                if ("All".equals(currentFilter)) {
+                    loadAirportData(null);
+                } else if ("Active".equals(currentFilter)) {
+                    loadAirportData("active");
+                } else if ("Inactive".equals(currentFilter)) {
+                    loadAirportData("inactive");
+                }
+
+                // Imprimir aeropuertos para diagnóstico
+                airportService.printAllAirports();
             } else {
-                showAlert("Error", "Failed to create airport. Code might already exist.");
+                showAlert("Error", "No se pudo crear el aeropuerto. El código podría ya existir.");
             }
         } catch (Exception e) {
-            showAlert("Error", "Error creating airport: " + e.getMessage());
+            System.err.println("Error al crear aeropuerto: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Error", "Error al crear aeropuerto: " + e.getMessage());
         }
     }
 

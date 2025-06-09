@@ -1,6 +1,5 @@
 package services;
 
-import datastructure.circular.DoublyLinkedList;
 import domain.Airport;
 import datastructure.list.SinglyLinkedList;
 import datastructure.list.ListException;
@@ -12,16 +11,21 @@ public class AirportService {
     // Constructor privado para patrón Singleton
     private AirportService() {
         this.airports = new SinglyLinkedList<>();
-        loadInitialAirports(); // Cargar aeropuertos iniciales automáticamente al crear la instancia
+        System.out.println("AirportService: Constructor ejecutado");
+        loadInitialAirports();
     }
 
     // Método para obtener la instancia única
-    public static AirportService getInstance() {
+    public static synchronized AirportService getInstance() {
         if (instance == null) {
+            System.out.println("AirportService: Creando nueva instancia");
             instance = new AirportService();
+        } else {
+            System.out.println("AirportService: Usando instancia existente");
         }
         return instance;
     }
+
     /**
      * Crear un nuevo aeropuerto
      * @param airport El aeropuerto a crear
@@ -30,16 +34,25 @@ public class AirportService {
     public boolean createAirport(Airport airport) {
         try {
             // Verificar si ya existe un aeropuerto con el mismo código
-            for (int i = 1; i <= airports.size(); i++) {  // Nota: Los índices empiezan en 1
-                Airport existingAirport = (Airport) airports.getNode(i).data;
-                if (existingAirport.getCode().equals(airport.getCode())) {
-                    return false; // Ya existe un aeropuerto con este código
+            if (!airports.isEmpty()) {
+                try {
+                    for (int i = 1; i <= airports.size(); i++) {
+                        Airport existingAirport = (Airport) airports.getNode(i).data;
+                        if (existingAirport.getCode().equals(airport.getCode())) {
+                            return false; // Ya existe un aeropuerto con este código
+                        }
+                    }
+                } catch (ListException e) {
+                    System.err.println("Error verificando aeropuerto existente: " + e.getMessage());
                 }
             }
 
+            // Si llegamos aquí, es seguro añadir el aeropuerto
             airports.add(airport);
+            System.out.println("Aeropuerto añadido: " + airport.getCode());
             return true;
-        } catch (ListException e) {
+        } catch (Exception e) {
+            System.err.println("Error creando aeropuerto: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -55,26 +68,47 @@ public class AirportService {
      */
     public boolean updateAirport(String code, String name, String country, String status) {
         try {
-            for (int i = 1; i <= airports.size(); i++) {  // Nota: Los índices empiezan en 1
+            System.out.println("AirportService.updateAirport: Intentando actualizar aeropuerto con código " + code);
+
+            if (airports.isEmpty()) {
+                System.out.println("AirportService.updateAirport: La lista está vacía");
+                return false;
+            }
+
+            int size = airports.size();
+            System.out.println("AirportService.updateAirport: Tamaño de la lista: " + size);
+
+            for (int i = 1; i <= size; i++) {
                 Airport airport = (Airport) airports.getNode(i).data;
                 if (airport.getCode().equals(code)) {
-                    if (name != null) {
+                    System.out.println("AirportService.updateAirport: Aeropuerto encontrado, actualizando...");
+
+                    // Actualizar los campos si no son null
+                    if (name != null && !name.isEmpty()) {
                         airport.setName(name);
                     }
-                    if (country != null) {
+                    if (country != null && !country.isEmpty()) {
                         airport.setCountry(country);
                     }
-                    if (status != null) {
+                    if (status != null && !status.isEmpty()) {
                         airport.setStatus(status);
                     }
 
                     // Actualizar el nodo en la lista
                     airports.getNode(i).data = airport;
+                    System.out.println("AirportService.updateAirport: Aeropuerto actualizado con éxito");
                     return true;
                 }
             }
+
+            System.out.println("AirportService.updateAirport: No se encontró el aeropuerto con código " + code);
             return false;
         } catch (ListException e) {
+            System.err.println("AirportService.updateAirport: Error de lista: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            System.err.println("AirportService.updateAirport: Error general: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -87,15 +121,48 @@ public class AirportService {
      */
     public boolean deleteAirport(String code) {
         try {
-            for (int i = 1; i <= airports.size(); i++) {  // Nota: Los índices empiezan en 1
+            System.out.println("AirportService.deleteAirport: Intentando eliminar aeropuerto con código " + code);
+
+            if (airports.isEmpty()) {
+                System.out.println("AirportService.deleteAirport: La lista está vacía");
+                return false;
+            }
+
+            int size = airports.size();
+            System.out.println("AirportService.deleteAirport: Tamaño de la lista antes de eliminar: " + size);
+
+            for (int i = 1; i <= size; i++) {
                 Airport airport = (Airport) airports.getNode(i).data;
                 if (airport.getCode().equals(code)) {
-                    airports.remove(airport);
+                    System.out.println("AirportService.deleteAirport: Aeropuerto encontrado, eliminando...");
+
+                    // Crear una nueva lista temporal
+                    SinglyLinkedList<Airport> tempList = new SinglyLinkedList<>();
+
+                    // Copiar todos los aeropuertos excepto el que se va a eliminar
+                    for (int j = 1; j <= size; j++) {
+                        if (j != i) {
+                            tempList.add((Airport) airports.getNode(j).data);
+                        }
+                    }
+
+                    // Reemplazar la lista original
+                    airports = tempList;
+
+                    System.out.println("AirportService.deleteAirport: Aeropuerto eliminado con éxito");
+                    System.out.println("AirportService.deleteAirport: Tamaño de la lista después de eliminar: " + airports.size());
                     return true;
                 }
             }
+
+            System.out.println("AirportService.deleteAirport: No se encontró el aeropuerto con código " + code);
             return false;
         } catch (ListException e) {
+            System.err.println("AirportService.deleteAirport: Error de lista: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            System.err.println("AirportService.deleteAirport: Error general: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -107,6 +174,7 @@ public class AirportService {
      * @return true si se activó correctamente, false si no se encontró el aeropuerto
      */
     public boolean activateAirport(String code) {
+        System.out.println("AirportService.activateAirport: Cambiando estado a 'active' para " + code);
         return updateAirport(code, null, null, "active");
     }
 
@@ -116,27 +184,8 @@ public class AirportService {
      * @return true si se desactivó correctamente, false si no se encontró el aeropuerto
      */
     public boolean deactivateAirport(String code) {
+        System.out.println("AirportService.deactivateAirport: Cambiando estado a 'inactive' para " + code);
         return updateAirport(code, null, null, "inactive");
-    }
-
-    /**
-     * Obtener un aeropuerto por su código
-     * @param code Código del aeropuerto
-     * @return El aeropuerto o null si no se encontró
-     */
-    public Airport getAirport(String code) {
-        try {
-            for (int i = 1; i <= airports.size(); i++) {  // Nota: Los índices empiezan en 1
-                Airport airport = (Airport) airports.getNode(i).data;
-                if (airport.getCode().equals(code)) {
-                    return airport;
-                }
-            }
-            return null;
-        } catch (ListException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     /**
@@ -148,40 +197,108 @@ public class AirportService {
         SinglyLinkedList<Airport> filteredList = new SinglyLinkedList<>();
 
         try {
-            for (int i = 1; i <= airports.size(); i++) {  // Nota: Los índices empiezan en 1
-                Airport airport = (Airport) airports.getNode(i).data;
+            if (airports.isEmpty()) {
+                System.out.println("AirportService.listAirports: La lista está vacía");
+                // Volver a cargar aeropuertos iniciales si la lista está vacía
+                loadInitialAirports();
 
-                // Aplicar filtro
-                if (filter == null || filter.isEmpty()) {
-                    filteredList.add(airport); // Listar todos
-                } else if (filter.equals("active") && airport.getStatus().equals("active")) {
-                    filteredList.add(airport); // Solo activos
-                } else if (filter.equals("inactive") && airport.getStatus().equals("inactive")) {
-                    filteredList.add(airport); // Solo inactivos
+                if (airports.isEmpty()) {
+                    System.out.println("AirportService.listAirports: La lista sigue vacía después de intentar cargarla");
+                    return filteredList;
                 }
             }
+
+            int size = airports.size();
+            System.out.println("AirportService.listAirports: Tamaño de la lista: " + size);
+
+            for (int i = 1; i <= size; i++) {
+                try {
+                    Airport airport = (Airport) airports.getNode(i).data;
+
+                    // Aplicar filtro
+                    if (filter == null || filter.isEmpty()) {
+                        filteredList.add(airport); // Listar todos
+                    } else if (filter.equals("active") && airport.getStatus().equals("active")) {
+                        filteredList.add(airport); // Solo activos
+                    } else if (filter.equals("inactive") && airport.getStatus().equals("inactive")) {
+                        filteredList.add(airport); // Solo inactivos
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error procesando aeropuerto " + i + ": " + e.getMessage());
+                }
+            }
+
+            System.out.println("AirportService.listAirports: Tamaño de la lista filtrada: " + filteredList.size());
         } catch (ListException e) {
-            e.printStackTrace();
-            // Manejar excepción
+            System.err.println("Error al listar aeropuertos: " + e.getMessage());
         }
 
         return filteredList;
     }
 
     /**
-     * Cargar aeropuertos iniciales desde un archivo
+     * Cargar aeropuertos iniciales
      */
     public void loadInitialAirports() {
-        // Aeropuertos de ejemplo
-        createAirport(new Airport("SJO", "Aeropuerto Internacional Juan Santamaría", "Costa Rica", "active"));
-        createAirport(new Airport("LIR", "Aeropuerto Internacional Daniel Oduber", "Costa Rica", "active"));
-        createAirport(new Airport("MIA", "Aeropuerto Internacional de Miami", "Estados Unidos", "active"));
-        createAirport(new Airport("LAX", "Aeropuerto Internacional de Los Ángeles", "Estados Unidos", "active"));
-        createAirport(new Airport("JFK", "Aeropuerto Internacional John F. Kennedy", "Estados Unidos", "active"));
-        createAirport(new Airport("MEX", "Aeropuerto Internacional Benito Juárez", "México", "active"));
-        createAirport(new Airport("MAD", "Aeropuerto Adolfo Suárez Madrid-Barajas", "España", "active"));
-        createAirport(new Airport("FCO", "Aeropuerto Leonardo da Vinci-Fiumicino", "Italia", "active"));
-        createAirport(new Airport("CDG", "Aeropuerto Charles de Gaulle", "Francia", "active"));
-        createAirport(new Airport("LHR", "Aeropuerto de Londres-Heathrow", "Reino Unido", "inactive"));
+        System.out.println("AirportService.loadInitialAirports: Iniciando carga de aeropuertos");
+
+        // Añadir aeropuertos directamente a la lista para evitar el problema del método add
+        try {
+            airports.add(new Airport("SJO", "Aeropuerto Internacional Juan Santamaría", "Costa Rica", "active"));
+            airports.add(new Airport("LIR", "Aeropuerto Internacional Daniel Oduber", "Costa Rica", "active"));
+            airports.add(new Airport("MIA", "Aeropuerto Internacional de Miami", "Estados Unidos", "active"));
+            airports.add(new Airport("LAX", "Aeropuerto Internacional de Los Ángeles", "Estados Unidos", "active"));
+            airports.add(new Airport("JFK", "Aeropuerto Internacional John F. Kennedy", "Estados Unidos", "active"));
+            airports.add(new Airport("MEX", "Aeropuerto Internacional Benito Juárez", "México", "active"));
+            airports.add(new Airport("MAD", "Aeropuerto Adolfo Suárez Madrid-Barajas", "España", "active"));
+            airports.add(new Airport("FCO", "Aeropuerto Leonardo da Vinci-Fiumicino", "Italia", "active"));
+            airports.add(new Airport("CDG", "Aeropuerto Charles de Gaulle", "Francia", "active"));
+            airports.add(new Airport("LHR", "Aeropuerto de Londres-Heathrow", "Reino Unido", "inactive"));
+
+            System.out.println("AirportService.loadInitialAirports: Aeropuertos cargados");
+
+            try {
+                int size = airports.size();
+                System.out.println("AirportService.loadInitialAirports: Tamaño final: " + size);
+            } catch (ListException e) {
+                System.err.println("Error obteniendo tamaño después de cargar: " + e.getMessage());
+            }
+        } catch (Exception e) {
+            System.err.println("Error cargando aeropuertos iniciales: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Método de diagnóstico para imprimir todos los aeropuertos
+     */
+    public void printAllAirports() {
+        System.out.println("=== IMPRIMIENDO TODOS LOS AEROPUERTOS ===");
+        try {
+            if (airports.isEmpty()) {
+                System.out.println("La lista está vacía. Intentando cargar aeropuertos...");
+                loadInitialAirports();
+                if (airports.isEmpty()) {
+                    System.out.println("La lista sigue vacía después de intentar cargarla.");
+                    return;
+                }
+            }
+
+            int size = airports.size();
+            System.out.println("Tamaño de la lista: " + size);
+
+            for (int i = 1; i <= size; i++) {
+                try {
+                    Airport airport = (Airport) airports.getNode(i).data;
+                    System.out.println(i + ": " + airport.getCode() + " - " + airport.getName() + " - " + airport.getStatus());
+                } catch (Exception e) {
+                    System.err.println("Error al acceder al aeropuerto " + i + ": " + e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error imprimiendo aeropuertos: " + e.getMessage());
+            e.printStackTrace();
+        }
+        System.out.println("======================================");
     }
 }

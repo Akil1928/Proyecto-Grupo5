@@ -219,9 +219,24 @@ public class DoublyLinkedList<T> implements List<T> {
 
     @Override
     public Node getNode(int index) throws ListException {
-        return null;
-    }
+        if (isEmpty()) {
+            throw new ListException("The list is empty");
+        }
 
+        if (index < 0 || index >= size) {
+            throw new ListException("Index out of bounds: " + index);
+        }
+
+        Node<T> current = first;
+        int i = 0;
+
+        while (i < index) {
+            current = current.getNext();
+            i++;
+        }
+
+        return current;
+    }
     @Override
     public String toString() {
         if (isEmpty()) {
