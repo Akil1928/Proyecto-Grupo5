@@ -1,0 +1,27 @@
+[
+  {
+    "origin": "SJO",
+    "destinations": ["LIR", "PTY", "MIA"],
+    "distances": [210, 530, 2250]
+  },
+  {
+    "origin": "LIR",
+    "destinations": ["SJO", "MIA"],
+    "distances": [210, 1850]
+  },
+  {
+    "origin": "PTY",
+    "destinations": ["SJO", "MIA", "LAX"],
+    "distances": [530, 2100, 3200]
+  },
+  {
+    "origin": "MIA",
+    "destinations": ["SJO", "LIR", "LAX"],
+    "distances": [2250, 1850, 3750]
+  },
+  {
+    "origin": "LAX",
+    "destinations": ["MIA"],
+    "distances": [3750]
+  }
+]

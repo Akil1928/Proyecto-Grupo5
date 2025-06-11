@@ -25,4 +25,10 @@ public class Vertex {
     public String toString() {
         return data+"";
     }
+
+    public SinglyLinkedList getSuccessors() {
+        return edgesList;
+    }
+
+
 }

@@ -1,0 +1,7 @@
+[
+  { "code": "SJO", "name": "Juan Santamaría", "country": "Costa Rica" },
+  { "code": "LIR", "name": "Daniel Oduber", "country": "Costa Rica" },
+  { "code": "PTY", "name": "Tocumen", "country": "Panamá" },
+  { "code": "MIA", "name": "Miami Intl", "country": "USA" },
+  { "code": "LAX", "name": "Los Angeles Intl", "country": "USA" }
+]
