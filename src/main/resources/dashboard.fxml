@@ -1,77 +1,223 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminDashboardController">
+            prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminDashboardController"
+            styleClass="root">
+
     <top>
-        <MenuBar BorderPane.alignment="CENTER">
+        <MenuBar BorderPane.alignment="CENTER" styleClass="menu-bar">
             <menus>
-                <Menu mnemonicParsing="false" text="Aeropuertos">
+                <Menu mnemonicParsing="false" text="✈️ Aeropuertos" styleClass="menu">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Gestionar Aeropuertos" onAction="#handleManageAirports" />
-                        <MenuItem mnemonicParsing="false" text="Listar Aeropuertos" onAction="#handleManageAirports" />
+                        <MenuItem mnemonicParsing="false" text="Gestionar Aeropuertos" onAction="#handleManageAirports" styleClass="menu-item" />
+                        <MenuItem mnemonicParsing="false" text="Listar Aeropuertos" onAction="#handleManageAirports" styleClass="menu-item" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Rutas">
+                <Menu mnemonicParsing="false" text="🛣️ Rutas" styleClass="menu">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Crear Ruta" />
-                        <MenuItem mnemonicParsing="false" text="Modificar Ruta" />
-                        <MenuItem mnemonicParsing="false" text="Calcular Ruta más corta" />
+                        <MenuItem mnemonicParsing="false" text="Crear Ruta" styleClass="menu-item" />
+                        <MenuItem mnemonicParsing="false" text="Modificar Ruta" styleClass="menu-item" />
+                        <MenuItem mnemonicParsing="false" text="Calcular Ruta más corta" styleClass="menu-item" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Pasajeros">
+                <Menu mnemonicParsing="false" text="👥 Pasajeros" styleClass="menu">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Registro de Pasajeros" />
-                        <MenuItem mnemonicParsing="false" text="Histórico de Vuelos" />
+                        <MenuItem mnemonicParsing="false" text="Registro de Pasajeros" styleClass="menu-item" />
+                        <MenuItem mnemonicParsing="false" text="Histórico de Vuelos" styleClass="menu-item" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Vuelos">
+                <Menu mnemonicParsing="false" text="🛫 Vuelos" styleClass="menu">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Crear Vuelo" />
-                        <MenuItem mnemonicParsing="false" text="Asignar Pasajeros" />
+                        <MenuItem mnemonicParsing="false" text="Crear Vuelo" styleClass="menu-item" />
+                        <MenuItem mnemonicParsing="false" text="Asignar Pasajeros" styleClass="menu-item" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Reportes">
+                <Menu mnemonicParsing="false" text="📊 Reportes" styleClass="menu">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Estadísticas" />
-                        <MenuItem mnemonicParsing="false" text="Generar PDF" />
+                        <MenuItem mnemonicParsing="false" text="Estadísticas" styleClass="menu-item" />
+                        <MenuItem mnemonicParsing="false" text="Generar PDF" styleClass="menu-item" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Sistema">
+                <Menu mnemonicParsing="false" text="⚙️ Sistema" styleClass="menu">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Administrar Usuarios" />
-                        <MenuItem mnemonicParsing="false" text="Cerrar Sesión" onAction="#handleLogout" />
+                        <MenuItem mnemonicParsing="false" text="Administrar Usuarios" styleClass="menu-item" />
+                        <MenuItem mnemonicParsing="false" text="Cerrar Sesión" onAction="#handleLogout" styleClass="menu-item" />
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
     </top>
+
     <center>
-        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-            <children>
-                <Label text="Panel de Administrador">
+        <VBox alignment="TOP_CENTER" spacing="30.0" styleClass="spacing-lg">
+            <padding>
+                <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+            </padding>
+
+            <!-- Header Section -->
+            <VBox alignment="CENTER" styleClass="card" spacing="15.0">
+                <padding>
+                    <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                </padding>
+                <Label text="🏢 Panel de Administrador" styleClass="label title">
                     <font>
-                        <Font name="System Bold" size="24.0" />
+                        <Font name="System Bold" size="28.0" />
                     </font>
                 </Label>
-                <Label text="Bienvenido al Sistema de Gestión de Aeropuertos y Rutas de Vuelo">
+                <Label text="Sistema de Gestión de Aeropuertos y Rutas de Vuelo" styleClass="label subtitle">
                     <font>
-                        <Font size="16.0" />
+                        <Font size="18.0" />
                     </font>
+                </Label>
+                <Separator prefWidth="200.0">
                     <VBox.margin>
-                        <Insets top="20.0" />
+                        <Insets top="10.0" />
                     </VBox.margin>
+                </Separator>
+                <Label text="Bienvenido al centro de control de operaciones aéreas" styleClass="label">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
                 </Label>
-            </children>
+            </VBox>
+
+            <!-- Quick Actions Grid -->
+            <VBox alignment="CENTER" spacing="20.0">
+                <Label text="Acciones Rápidas" styleClass="label section-header">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
+
+                <GridPane hgap="20.0" vgap="20.0" alignment="CENTER">
+                    <!-- Row 1 -->
+                    <VBox styleClass="card" spacing="15.0" alignment="CENTER" prefWidth="200.0" prefHeight="150.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                        <Label text="✈️" styleClass="label">
+                            <font>
+                                <Font size="36.0" />
+                            </font>
+                        </Label>
+                        <Label text="Gestionar Aeropuertos" styleClass="label section-header" textAlignment="CENTER" wrapText="true" />
+                        <Button text="Acceder" styleClass="button" onAction="#handleManageAirports" />
+                    </VBox>
+
+                    <VBox styleClass="card" spacing="15.0" alignment="CENTER" prefWidth="200.0" prefHeight="150.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                        <Label text="🛣️" styleClass="label">
+                            <font>
+                                <Font size="36.0" />
+                            </font>
+                        </Label>
+                        <Label text="Administrar Rutas" styleClass="label section-header" textAlignment="CENTER" wrapText="true" />
+                        <Button text="Acceder" styleClass="button" />
+                    </VBox>
+
+                    <VBox styleClass="card" spacing="15.0" alignment="CENTER" prefWidth="200.0" prefHeight="150.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                        <Label text="🛫" styleClass="label">
+                            <font>
+                                <Font size="36.0" />
+                            </font>
+                        </Label>
+                        <Label text="Control de Vuelos" styleClass="label section-header" textAlignment="CENTER" wrapText="true" />
+                        <Button text="Acceder" styleClass="button" />
+                    </VBox>
+
+                    <!-- Row 2 -->
+                    <VBox styleClass="card" spacing="15.0" alignment="CENTER" prefWidth="200.0" prefHeight="150.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                        <Label text="👥" styleClass="label">
+                            <font>
+                                <Font size="36.0" />
+                            </font>
+                        </Label>
+                        <Label text="Gestión de Pasajeros" styleClass="label section-header" textAlignment="CENTER" wrapText="true" />
+                        <Button text="Acceder" styleClass="button" />
+                    </VBox>
+
+                    <VBox styleClass="card" spacing="15.0" alignment="CENTER" prefWidth="200.0" prefHeight="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                        <Label text="📊" styleClass="label">
+                            <font>
+                                <Font size="36.0" />
+                            </font>
+                        </Label>
+                        <Label text="Reportes y Análisis" styleClass="label section-header" textAlignment="CENTER" wrapText="true" />
+                        <Button text="Acceder" styleClass="button" />
+                    </VBox>
+
+                    <VBox styleClass="card" spacing="15.0" alignment="CENTER" prefWidth="200.0" prefHeight="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                        <padding>
+                            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                        </padding>
+                        <Label text="⚙️" styleClass="label">
+                            <font>
+                                <Font size="36.0" />
+                            </font>
+                        </Label>
+                        <Label text="Configuración" styleClass="label section-header" textAlignment="CENTER" wrapText="true" />
+                        <Button text="Acceder" styleClass="button" />
+                    </VBox>
+                </GridPane>
+            </VBox>
+
+            <!-- Status Bar -->
+            <HBox alignment="CENTER" spacing="30.0" styleClass="panel">
+                <padding>
+                    <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                </padding>
+
+                <VBox alignment="CENTER" spacing="5.0">
+                    <Label text="Estado del Sistema" styleClass="label" />
+                    <Label text="ACTIVO" styleClass="status-active" />
+                </VBox>
+
+                <Separator orientation="VERTICAL" />
+
+                <VBox alignment="CENTER" spacing="5.0">
+                    <Label text="Aeropuertos Registrados" styleClass="label" />
+                    <Label text="15" styleClass="label title" />
+                </VBox>
+
+                <Separator orientation="VERTICAL" />
+
+                <VBox alignment="CENTER" spacing="5.0">
+                    <Label text="Rutas Activas" styleClass="label" />
+                    <Label text="42" styleClass="label title" />
+                </VBox>
+
+                <Separator orientation="VERTICAL" />
+
+                <VBox alignment="CENTER" spacing="5.0">
+                    <Label text="Vuelos Hoy" styleClass="label" />
+                    <Label text="128" styleClass="label title" />
+                </VBox>
+            </HBox>
         </VBox>
     </center>
 </BorderPane>

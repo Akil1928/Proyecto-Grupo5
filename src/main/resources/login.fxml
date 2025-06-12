@@ -4,37 +4,193 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/17"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
+<StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="controller.LoginController" styleClass="root login-background"
+           prefHeight="600.0" prefWidth="900.0">
 
-    <Label text="Sistema de Gestión de Aeropuertos y Rutas de Vuelo" textAlignment="CENTER" wrapText="true">
-        <font>
-            <Font name="System Bold" size="16.0" />
-        </font>
-    </Label>
+    <!-- BACKGROUND OVERLAY -->
+    <VBox styleClass="login-overlay" />
 
-    <Label text="Iniciar Sesión" textAlignment="CENTER">
-        <font>
-            <Font size="14.0" />
-        </font>
-    </Label>
+    <!-- MAIN LOGIN CONTAINER -->
+    <VBox alignment="CENTER" spacing="0.0" styleClass="login-container">
+        <children>
 
-    <TextField fx:id="usernameField" promptText="Usuario" />
-    <PasswordField fx:id="passwordField" promptText="Contraseña" />
+            <!-- HEADER SECTION -->
+            <VBox alignment="CENTER" spacing="15.0" styleClass="login-header">
+                <padding>
+                    <Insets bottom="30.0" left="40.0" right="40.0" top="40.0" />
+                </padding>
+                <children>
+                    <!-- LOGO/ICON -->
+                    <Label text="✈️" styleClass="login-logo">
+                        <font>
+                            <Font size="64.0" />
+                        </font>
+                    </Label>
 
-    <Button fx:id="loginButton" onAction="#handleLogin" text="Ingresar" />
+                    <!-- MAIN TITLE -->
+                    <Label text="AeroManager Pro" styleClass="login-title">
+                        <font>
+                            <Font name="System Bold" size="28.0" />
+                        </font>
+                    </Label>
 
-    <Label text="Usuarios por defecto: &#10;admin/admin123 (Administrador)&#10;user/user123 (Usuario)"
-           textAlignment="CENTER" wrapText="true">
-        <font>
-            <Font size="12.0" />
-        </font>
-    </Label>
-</VBox>
+                    <!-- SUBTITLE -->
+                    <Label text="Sistema de Gestión de Aeropuertos y Rutas de Vuelo"
+                           textAlignment="CENTER" wrapText="true" styleClass="login-subtitle">
+                        <font>
+                            <Font size="16.0" />
+                        </font>
+                    </Label>
+
+                    <Separator prefWidth="200.0" styleClass="login-separator" />
+
+                    <!-- LOGIN PROMPT -->
+                    <Label text="Iniciar Sesión" styleClass="login-prompt">
+                        <font>
+                            <Font name="System Bold" size="20.0" />
+                        </font>
+                    </Label>
+                </children>
+            </VBox>
+
+            <!-- LOGIN FORM -->
+            <VBox alignment="CENTER" spacing="20.0" styleClass="login-form">
+                <padding>
+                    <Insets bottom="30.0" left="40.0" right="40.0" top="20.0" />
+                </padding>
+                <children>
+
+                    <!-- USERNAME FIELD -->
+                    <VBox spacing="8.0">
+                        <children>
+                            <Label text="👤 Usuario" styleClass="field-label">
+                                <font>
+                                    <Font name="System Bold" size="14.0" />
+                                </font>
+                            </Label>
+                            <TextField fx:id="usernameField" promptText="Ingrese su nombre de usuario"
+                                       styleClass="login-text-field" prefHeight="45.0" />
+                        </children>
+                    </VBox>
+
+                    <!-- PASSWORD FIELD -->
+                    <VBox spacing="8.0">
+                        <children>
+                            <Label text="🔒 Contraseña" styleClass="field-label">
+                                <font>
+                                    <Font name="System Bold" size="14.0" />
+                                </font>
+                            </Label>
+                            <PasswordField fx:id="passwordField" promptText="Ingrese su contraseña"
+                                           styleClass="login-text-field" prefHeight="45.0" />
+                        </children>
+                    </VBox>
+
+                    <!-- SPACER -->
+                    <Region prefHeight="10.0" />
+
+                    <!-- LOGIN BUTTON -->
+                    <Button fx:id="loginButton" onAction="#handleLogin" text="🚀 Ingresar al Sistema"
+                            styleClass="login-button" prefHeight="50.0" prefWidth="300.0">
+                        <font>
+                            <Font name="System Bold" size="16.0" />
+                        </font>
+                    </Button>
+
+                </children>
+            </VBox>
+
+            <!-- FOOTER INFO -->
+            <VBox alignment="CENTER" spacing="15.0" styleClass="login-footer">
+                <padding>
+                    <Insets bottom="30.0" left="40.0" right="40.0" top="20.0" />
+                </padding>
+                <children>
+
+                    <!-- DEMO ACCOUNTS TITLE -->
+                    <Label text="📋 Cuentas de Demostración" styleClass="demo-title">
+                        <font>
+                            <Font name="System Bold" size="16.0" />
+                        </font>
+                    </Label>
+
+                    <!-- DEMO ACCOUNTS GRID -->
+                    <HBox alignment="CENTER" spacing="40.0">
+                        <children>
+                            <!-- ADMIN ACCOUNT -->
+                            <VBox alignment="CENTER" spacing="8.0" styleClass="demo-account">
+                                <padding>
+                                    <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                                </padding>
+                                <children>
+                                    <Label text="👑" styleClass="demo-icon">
+                                        <font>
+                                            <Font size="24.0" />
+                                        </font>
+                                    </Label>
+                                    <Label text="Administrador" styleClass="demo-role">
+                                        <font>
+                                            <Font name="System Bold" size="14.0" />
+                                        </font>
+                                    </Label>
+                                    <Label text="Usuario: admin" styleClass="demo-credential" />
+                                    <Label text="Contraseña: admin123" styleClass="demo-credential" />
+                                </children>
+                            </VBox>
+
+                            <!-- USER ACCOUNT -->
+                            <VBox alignment="CENTER" spacing="8.0" styleClass="demo-account">
+                                <padding>
+                                    <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                                </padding>
+                                <children>
+                                    <Label text="👤" styleClass="demo-icon">
+                                        <font>
+                                            <Font size="24.0" />
+                                        </font>
+                                    </Label>
+                                    <Label text="Usuario Final" styleClass="demo-role">
+                                        <font>
+                                            <Font name="System Bold" size="14.0" />
+                                        </font>
+                                    </Label>
+                                    <Label text="Usuario: user" styleClass="demo-credential" />
+                                    <Label text="Contraseña: user123" styleClass="demo-credential" />
+                                </children>
+                            </VBox>
+                        </children>
+                    </HBox>
+
+                    <!-- SYSTEM STATUS -->
+                    <HBox alignment="CENTER" spacing="20.0" styleClass="login-status">
+                        <padding>
+                            <Insets top="20.0" />
+                        </padding>
+                        <children>
+                            <Label text="🌐 Sistema:" styleClass="status-label" />
+                            <Label text="En línea" styleClass="status-active" />
+                            <Separator orientation="VERTICAL" />
+                            <Label text="🔐 Seguridad:" styleClass="status-label" />
+                            <Label text="Activa" styleClass="status-active" />
+                            <Separator orientation="VERTICAL" />
+                            <Label text="⚡ Rendimiento:" styleClass="status-label" />
+                            <Label text="Óptimo" styleClass="status-active" />
+                        </children>
+                    </HBox>
+
+                </children>
+            </VBox>
+
+        </children>
+    </VBox>
+
+</StackPane>
