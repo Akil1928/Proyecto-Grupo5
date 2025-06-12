@@ -3,6 +3,7 @@ module ucr.lab.proyectogrupo5 {
     requires javafx.fxml;
     requires com.google.gson;
     requires com.fasterxml.jackson.databind;
+    requires java.desktop;
 
     opens ucr.lab.app to javafx.fxml;
     exports ucr.lab.app;

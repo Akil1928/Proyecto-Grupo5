@@ -1,65 +1,58 @@
 package datastructure.list;
 
 public class SinglyLinkedList<T> implements List<T> {
-    private Node<T> first; //apuntador al inicio de la lista
+    private Node<T> first; // apuntador al inicio de la lista
 
     public SinglyLinkedList() {
-        this.first = null; //la lista no existe
+        this.first = null; // la lista no existe
     }
 
     @Override
-    public int size() throws ListException {
-        if (isEmpty()) {
-            return 0;  // Si está vacía, simplemente retornamos 0
-        }
+    public int size() {
         Node<T> aux = first;
-        int count=0;
-        while(aux!=null){
+        int count = 0;
+        while (aux != null) {
             count++;
-            aux = aux.next; //lo movemos al sgte nodo
+            aux = aux.next;
         }
         return count;
     }
 
     @Override
     public void clear() {
-        this.first = null; //anulamos la lista
+        this.first = null; // anulamos la lista
     }
 
     @Override
     public boolean isEmpty() {
-        return this.first == null; //si es nulo está vacía
+        return this.first == null; // si es nulo está vacía
     }
 
     @Override
     public boolean contains(T element) throws ListException {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new ListException("Singly Linked List is empty");
         }
         Node<T> aux = first;
-        while(aux!=null){
-            if(util.Utility.compare(aux.data, element)==0){
+        while (aux != null) {
+            if (util.Utility.compare(aux.data, element) == 0) {
                 return true;
             }
-            aux = aux.next; //lo movemos al sgte nodo
+            aux = aux.next; // lo movemos al sgte nodo
         }
-        return false; //indica q el elemento no existe
+        return false; // indica que el elemento no existe
     }
 
     @Override
     public void add(T element) {
         Node<T> newNode = new Node<>(element);
-        if(isEmpty()){
+        if (isEmpty()) {
             first = newNode;
-        }else{
+        } else {
             Node<T> aux = first;
-            //mientras no llegue al ult nodo
-            while(aux.next!=null){
-                aux=aux.next;
+            while (aux.next != null) {
+                aux = aux.next;
             }
-            //una vez que se sale del while, quiere decir q
-            //aux esta en el ult nodo, por lo q lo podemos enlazar
-            //con el nuevo nodo
             aux.next = newNode;
         }
     }
@@ -67,9 +60,9 @@ public class SinglyLinkedList<T> implements List<T> {
     @Override
     public void addFirst(T element) {
         Node<T> newNode = new Node<>(element);
-        if(isEmpty()){
+        if (isEmpty()) {
             first = newNode;
-        }else{
+        } else {
             newNode.next = first;
             first = newNode;
         }
@@ -87,22 +80,21 @@ public class SinglyLinkedList<T> implements List<T> {
 
     @Override
     public void remove(T element) throws ListException {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new ListException("Singly Linked List is Empty");
         }
-        //Caso 1. El elemento a suprimir esta al inicio
-        if(util.Utility.compare(first.data, element)==0){
-            first = first.next; //saltamos el primer nodo
-        }else{  //Caso 2. El elemento a suprimir puede estar al medio o final
-            Node<T> prev = first; //dejo un apuntador al nodo anterior
+        // Caso 1. El elemento a suprimir está al inicio
+        if (util.Utility.compare(first.data, element) == 0) {
+            first = first.next; // saltamos el primer nodo
+        } else { // Caso 2. El elemento a suprimir puede estar al medio o final
+            Node<T> prev = first; // dejo un apuntador al nodo anterior
             Node<T> aux = first.next;
-            while(aux!=null && !(util.Utility.compare(aux.data, element)==0)){
+            while (aux != null && !(util.Utility.compare(aux.data, element) == 0)) {
                 prev = aux;
                 aux = aux.next;
             }
-            //se sale cuando alcanza nulo o cuando encuentra el elemento
-            if(aux!=null && util.Utility.compare(aux.data, element)==0){
-                //ya lo encontro, procedo a desenlazar el nodo
+            // se sale cuando alcanza nulo o cuando encuentra el elemento
+            if (aux != null && util.Utility.compare(aux.data, element) == 0) {
                 prev.next = aux.next;
             }
         }
@@ -110,7 +102,7 @@ public class SinglyLinkedList<T> implements List<T> {
 
     @Override
     public T removeFirst() throws ListException {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new ListException("Singly Linked List is Empty");
         }
         T element = first.data;
@@ -120,11 +112,11 @@ public class SinglyLinkedList<T> implements List<T> {
 
     @Override
     public T removeLast() throws ListException {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new ListException("Singly Linked List is Empty");
         }
 
-        if(first.next == null){
+        if (first.next == null) {
             T element = first.data;
             first = null;
             return element;
@@ -133,7 +125,7 @@ public class SinglyLinkedList<T> implements List<T> {
         Node<T> aux = first;
         Node<T> prev = null;
 
-        while(aux.next != null){
+        while (aux.next != null) {
             prev = aux;
             aux = aux.next;
         }
@@ -145,15 +137,17 @@ public class SinglyLinkedList<T> implements List<T> {
 
     @Override
     public void sort() throws ListException {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new ListException("Singly Linked List is Empty");
         }
-        for (int i = 1; i <= size() ; i++) {
-            for (int j = i+1; j <= size() ; j++) {
-                if(util.Utility.compare(getNode(j).data, getNode(i).data)<0){
-                    T aux = getNode(i).data;
-                    getNode(i).data = getNode(j).data;
-                    getNode(j).data = aux;
+        for (int i = 1; i <= size(); i++) {
+            for (int j = i + 1; j <= size(); j++) {
+                Node<T> nodeI = getNode(i);
+                Node<T> nodeJ = getNode(j);
+                if (util.Utility.compare(nodeJ.data, nodeI.data) < 0) {
+                    T aux = nodeI.data;
+                    nodeI.data = nodeJ.data;
+                    nodeJ.data = aux;
                 }
             }
         }
@@ -161,24 +155,24 @@ public class SinglyLinkedList<T> implements List<T> {
 
     @Override
     public int indexOf(T element) throws ListException {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new ListException("Singly Linked List is Empty");
         }
         Node<T> aux = first;
-        int index=1; //la lista inicia en 1
-        while(aux!=null){
-            if(util.Utility.compare(aux.data, element)==0){
+        int index = 1; // la lista inicia en 1
+        while (aux != null) {
+            if (util.Utility.compare(aux.data, element) == 0) {
                 return index;
             }
-            index++; //incremento el indice
-            aux=aux.next; //muevo aux al sgte nodo
+            index++; // incremento el índice
+            aux = aux.next; // muevo aux al sgte nodo
         }
-        return -1; //indica q el elemento no existe
+        return -1; // indica que el elemento no existe
     }
 
     @Override
     public T getFirst() throws ListException {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new ListException("Singly Linked List is Empty");
         }
         return first.data;
@@ -186,46 +180,43 @@ public class SinglyLinkedList<T> implements List<T> {
 
     @Override
     public T getLast() throws ListException {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new ListException("Singly Linked List is Empty");
         }
         Node<T> aux = first;
-        //mientras no llegue al ult nodo
-        while(aux.next!=null){
-            aux=aux.next;
+        while (aux.next != null) {
+            aux = aux.next;
         }
-        //se sale del while cuando aux esta en el ult nodo
         return aux.data;
     }
 
     @Override
     public Object getPrev(T element) throws ListException {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new ListException("Singly Linked List is Empty");
         }
-        if(util.Utility.compare(first.data, element)==0){
+        if (util.Utility.compare(first.data, element) == 0) {
             return "It's the first, it has no previous";
         }
         Node<T> aux = first;
-        //mientras no llegue al ult nodo
-        while(aux.next!=null){
-            if(util.Utility.compare(aux.next.data, element)==0){
-                return aux.data; //retornamos la data del nodo actual
+        while (aux.next != null) {
+            if (util.Utility.compare(aux.next.data, element) == 0) {
+                return aux.data; // retornamos la data del nodo actual
             }
-            aux=aux.next;
+            aux = aux.next;
         }
         return "Does not exist in Single Linked List";
     }
 
     @Override
     public Object getNext(T element) throws ListException {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new ListException("Singly Linked List is Empty");
         }
 
         Node<T> aux = first;
-        while(aux!=null){
-            if(util.Utility.compare(aux.data, element)==0 && aux.next != null){
+        while (aux != null) {
+            if (util.Utility.compare(aux.data, element) == 0 && aux.next != null) {
                 return aux.next.data;
             }
             aux = aux.next;
@@ -233,44 +224,48 @@ public class SinglyLinkedList<T> implements List<T> {
         return "Does not exist or is the last element in Single Linked List";
     }
 
+    // Método corregido getNode
     @Override
     public Node<T> getNode(int index) throws ListException {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new ListException("Singly Linked List is Empty");
         }
+        if (index < 1 || index > size()) {
+            throw new ListException("Index out of bounds");
+        }
         Node<T> aux = first;
-        int i = 1; // pos del primer nodo
-        while(aux!=null){
-            if(util.Utility.compare(i, index)==0) {  //ya encontro el indice
+        int i = 1; // posición del primer nodo (1-based)
+        while (aux != null) {
+            if (i == index) {
                 return aux;
             }
-            i++; //incremento la var local
-            aux = aux.next; //muevo aux al sgte nodo
+            i++;
+            aux = aux.next;
         }
-        return null; //si llega aqui es xq no encontro el index
+        throw new ListException("Index out of bounds");
     }
 
-
+    // Obtener nodo por elemento
     public Node<T> getNode(T element) throws ListException {
-        if(isEmpty()){
+        if (isEmpty()) {
             throw new ListException("Singly Linked List is Empty");
         }
         Node<T> aux = first;
-        while(aux!=null){
-            if(util.Utility.compare(aux.data, element)==0) {  //ya encontro el elemento
+        while (aux != null) {
+            if (util.Utility.compare(aux.data, element) == 0) {
                 return aux;
             }
-            aux = aux.next; //muevo aux al sgte nodo
+            aux = aux.next;
         }
-        return null; //si llega aqui es xq no encontro el index
+        return null; // si llega aquí es porque no encontró el elemento
     }
 
     @Override
     public String toString() {
         String result = "";
         Node<T> aux = first;
-        while(aux!=null){
-            result+= "\n"+aux.data;
+        while (aux != null) {
+            result += "\n" + aux.data;
             aux = aux.next;
         }
         return result;

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" prefHeight="298.0" prefWidth="388.0" spacing="10.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddPassengerDialogController">
+    <Label text="Agregar Pasajero" />
+    <TextField fx:id="idField" promptText="Cédula" />
+    <TextField fx:id="nameField" promptText="Nombre" />
+    <TextField fx:id="nationalityField" promptText="Nacionalidad" />
+    <HBox alignment="CENTER" spacing="10">
+        <Button onAction="#handleSave" text="Guardar" />
+        <Button onAction="#handleCancel" text="Cancelar" />
+    </HBox>
+</VBox>

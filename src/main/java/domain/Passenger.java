@@ -7,13 +7,16 @@ public class Passenger {
     private String name, nationality;
     private SinglyLinkedList<Flight> flightHistory;
 
-    public Passenger() {}
+    public Passenger() {
+        // Asegurarse de que flightHistory no sea nulo al crear un pasajero
+        this.flightHistory = new SinglyLinkedList<>();
+    }
 
     public Passenger(int id, String name, String nationality, SinglyLinkedList<Flight> flightHistory) {
         this.id = id;
         this.name = name;
         this.nationality = nationality;
-        this.flightHistory = flightHistory;
+        this.flightHistory = flightHistory != null ? flightHistory : new SinglyLinkedList<>();
     }
 
     public int getId() { return id; }
@@ -33,7 +36,6 @@ public class Passenger {
         return id + " - " + name + " (" + nationality + ")";
     }
 
-    // Para búsqueda en AVLTree por id
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

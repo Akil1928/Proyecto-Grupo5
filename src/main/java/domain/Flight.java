@@ -1,25 +1,42 @@
+
 package domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Flight {
-    private int number;
-    private String origin, destination;
-    private LocalDateTime departureTime;
-    private int capacity, occupancy;
+    private int number;  // Número del vuelo
+    private String origin;  // Aeropuerto de origen
+    private String destination;  // Aeropuerto de destino
+    private LocalDateTime departureTime;  // Hora de salida
+    private int capacity;  // Capacidad máxima de pasajeros
+    private int occupancy;  // Ocupación actual (número de pasajeros a bordo)
+    private List<Passenger> passengers; // Lista de pasajeros
 
-    public Flight() {
-    }
-
-    public Flight(int number, String origin, String destination, LocalDateTime departureTime, int capacity, int occupancy) {
+    // Constructor
+    public Flight(int number, String origin, String destination, LocalDateTime departureTime, int capacity) {
         this.number = number;
         this.origin = origin;
         this.destination = destination;
         this.departureTime = departureTime;
         this.capacity = capacity;
-        this.occupancy = occupancy;
+        this.occupancy = 0;  // Inicialmente no hay pasajeros
+        this.passengers = new ArrayList<>();  // Inicializamos la lista de pasajeros
     }
 
+    // Métodos para agregar pasajeros
+    public boolean addPassenger(Passenger passenger) {
+        if (occupancy < capacity) {
+            passengers.add(passenger);
+            occupancy++;
+            return true;
+        } else {
+            return false;  // El vuelo está lleno
+        }
+    }
+
+    // Métodos getter y setter
     public int getNumber() {
         return number;
     }
@@ -37,6 +54,11 @@ public class Flight {
     }
 
     public String getDestination() {
+        return destination;
+    }
+
+    // Método adicional para compatibilidad con el controlador
+    public String getDestino() {
         return destination;
     }
 
@@ -68,6 +90,15 @@ public class Flight {
         this.occupancy = occupancy;
     }
 
+    public List<Passenger> getPassengers() {
+        return passengers;
+    }
+
+    public void setPassengers(List<Passenger> passengers) {
+        this.passengers = passengers;
+        this.occupancy = passengers != null ? passengers.size() : 0;
+    }
+
     @Override
     public String toString() {
         return "Flight{" +
@@ -78,5 +109,19 @@ public class Flight {
                 ", capacity=" + capacity +
                 ", occupancy=" + occupancy +
                 '}';
+    }
+
+    // Método para comprobar si el vuelo está lleno
+    public boolean isFull() {
+        return occupancy >= capacity;
+    }
+
+    // Método para eliminar un pasajero
+    public boolean removePassenger(Passenger passenger) {
+        boolean removed = passengers.remove(passenger);
+        if (removed) {
+            occupancy--;
+        }
+        return removed;
     }
 }

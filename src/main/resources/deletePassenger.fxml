@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" prefHeight="201.0" prefWidth="290.0" spacing="10" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DeletePassengerDialogController">
+    <Label text="Eliminar Pasajero" />
+   <Label text="Ingrese el numero de cedula" />
+    <TextField fx:id="idField" promptText="Cédula" />
+    <HBox alignment="CENTER" spacing="10">
+        <Button onAction="#handleDelete" text="Eliminar" />
+        <Button onAction="#handleCancel" text="Cancelar" />
+    </HBox>
+</VBox>

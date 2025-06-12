@@ -5,10 +5,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import services.AirportService;
 import datastructure.list.ListException;
+
+import java.io.IOException;
 
 public class AirportController {
 
@@ -317,7 +322,16 @@ public class AirportController {
 
         airportTable.getSelectionModel().clearSelection();
     }
-
+    @FXML
+    public void regresarOnAction(ActionEvent event) {
+        try {
+            Parent dashboard = FXMLLoader.load(getClass().getResource("/dashboard.fxml"));
+            BorderPane root = (BorderPane) ((Button)event.getSource()).getScene().getRoot();
+            root.setCenter(dashboard);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);

@@ -1,14 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="Flight"
-            prefHeight="400.0" prefWidth="600.0">
+<VBox alignment="TOP_CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.FlightController">
+    <!-- Título -->
+    <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Gestión de Vuelos" />
 
-</AnchorPane>
+    <HBox spacing="20.0">
+        <!-- Panel izquierdo: Crear vuelo -->
+        <VBox spacing="10.0" style="-fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-padding: 10;" HBox.hgrow="ALWAYS">
+            <Label style="-fx-font-weight: bold;" text="Crear Nuevo Vuelo" />
+
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <Label minWidth="120" text="Número de vuelo:" />
+                <TextField fx:id="flightNumberField" minWidth="200" promptText="Número del vuelo" />
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <Label minWidth="120" text="Origen:" />
+                <ComboBox fx:id="originComboBox" prefWidth="200" promptText="Seleccione aeropuerto de origen" />
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <Label minWidth="120" text="Destino:" />
+                <ComboBox fx:id="destinationComboBox" prefWidth="200" promptText="Seleccione aeropuerto de destino" />
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <Label minWidth="120" text="Fecha de salida:" />
+                <DatePicker fx:id="departureDatePicker" minWidth="200" promptText="Seleccione fecha" />
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <Label minWidth="120" text="Hora de salida:" />
+                <HBox spacing="5">
+                    <ComboBox fx:id="departureHourCombo" prefWidth="95" promptText="Hora" />
+                    <Label text=":" />
+                    <ComboBox fx:id="departureMinuteCombo" prefWidth="95" promptText="Minuto" />
+                </HBox>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <Label minWidth="120" text="Capacidad:" />
+                <TextField fx:id="capacityField" minWidth="200" promptText="Capacidad del vuelo" />
+            </HBox>
+            <Button alignment="CENTER" onAction="#handleCreateFlight" prefWidth="150" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Crear Vuelo" />
+        </VBox>
+
+        <!-- Panel derecho: Pasajeros -->
+        <VBox spacing="10.0" style="-fx-border-color: #CCCCCC; -fx-border-radius: 5; -fx-padding: 10;" HBox.hgrow="ALWAYS">
+            <Label style="-fx-font-weight: bold;" text="Pasajeros del Vuelo Seleccionado" />
+
+            <ListView fx:id="passengerListView" prefHeight="150" VBox.vgrow="ALWAYS" />
+
+            <Separator />
+
+            <Label style="-fx-font-weight: bold;" text="Agregar Pasajero al Vuelo" />
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <Label text="Seleccionar pasajero:" />
+                <ComboBox fx:id="passengerComboBox" prefWidth="250" HBox.hgrow="ALWAYS" />
+            </HBox>
+            <Button onAction="#handleAddPassenger" prefWidth="150" style="-fx-background-color: #2196F3; -fx-text-fill: white;" text="Agregar Pasajero" />
+        </VBox>
+    </HBox>
+
+    <!-- Acciones de vuelos -->
+    <HBox alignment="CENTER" spacing="20.0">
+        <Button onAction="#handleDisplayActiveFlights" style="-fx-background-color: #FF9800; -fx-text-fill: white;" text="Mostrar Vuelos Activos" />
+        <Button onAction="#handleDisplayCompletedFlights" style="-fx-background-color: #9C27B0; -fx-text-fill: white;" text="Mostrar Vuelos Completados" />
+        <Button onAction="#handleSimulateFlight" style="-fx-background-color: #F44336; -fx-text-fill: white;" text="Simular Vuelo" />
+    </HBox>
+
+    <!-- Tabla de vuelos -->
+    <TableView fx:id="flightTable" prefHeight="300.0" prefWidth="800.0">
+        <columns>
+            <TableColumn fx:id="numberColumn" prefWidth="100" text="Número de Vuelo" />
+            <TableColumn fx:id="originColumn" prefWidth="120" text="Origen" />
+            <TableColumn fx:id="destinationColumn" prefWidth="120" text="Destino" />
+            <TableColumn fx:id="departureTimeColumn" prefWidth="180" text="Hora de Salida" />
+            <TableColumn fx:id="capacityColumn" prefWidth="80" text="Capacidad" />
+            <TableColumn fx:id="occupancyColumn" prefWidth="80" text="Ocupación" />
+        </columns>
+    </TableView>
+   <Button onAction="#regresarOnAction" style="-fx-background-color: #F54400; -fx-text-fill: white;" text="REGRESAR" />
+
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+</VBox>

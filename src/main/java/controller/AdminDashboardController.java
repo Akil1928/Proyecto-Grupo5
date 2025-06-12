@@ -22,10 +22,7 @@ public class AdminDashboardController {
     @FXML
     public void initialize() {
         userManager = UserManager.getInstance();
-
-        // Verificar que el usuario es administrador
         if (!userManager.isCurrentUserAdmin()) {
-            // Redirigir o mostrar error
             System.err.println("Error: Acceso no autorizado al panel de administrador");
         }
     }
@@ -41,21 +38,45 @@ public class AdminDashboardController {
     }
 
     @FXML
+    public void accederPasajeroOnAction(ActionEvent event) {
+        // Nota: El método ahora coincide con el onAction del botón en el FXML: "#accederPasajeroOnAction"
+        try {
+            Parent passengerView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/passenger.fxml")));
+            mainPane.setCenter(passengerView);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     public void handleLogout(ActionEvent event) {
         try {
-            // Cerrar sesión
             userManager.logout();
-
-            // Redirigir a la pantalla de login
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/login.fxml")));
-
-            // Obtener el stage actual desde el evento
             Stage stage = (Stage) mainPane.getScene().getWindow();
-
             Scene scene = new Scene(root, 400, 300);
             stage.setTitle("Sistema de Gestión de Aeropuertos - Login");
             stage.setScene(scene);
             stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    void accederVuelosOnAction(ActionEvent event) {
+        try {
+            Parent passengerView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/flight.fxml")));
+            mainPane.setCenter(passengerView);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    // Este método permite que AirportController y PassengerManagementController lo llamen para regresar
+    public static void recargarDashboard(ActionEvent event) {
+        try {
+            Parent dashboard = FXMLLoader.load(AdminDashboardController.class.getResource("/admin_dashboard.fxml"));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(dashboard, 1000, 700));
         } catch (IOException e) {
             e.printStackTrace();
         }

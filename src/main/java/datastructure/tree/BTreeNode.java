@@ -8,12 +8,12 @@ public class BTreeNode {
     public BTreeNode(Object data) {
         this.data = data;
         this.left = this.right = null;
+        this.path = "";
     }
 
     public BTreeNode(Object data, String path) {
         this.data = data;
         this.left = this.right = null;
-        this.path= path;
+        this.path = path;
     }
-
 }

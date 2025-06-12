@@ -196,42 +196,38 @@ public class AirportService {
     public SinglyLinkedList<Airport> listAirports(String filter) {
         SinglyLinkedList<Airport> filteredList = new SinglyLinkedList<>();
 
-        try {
+        if (airports.isEmpty()) {
+            System.out.println("AirportService.listAirports: La lista está vacía");
+            // Volver a cargar aeropuertos iniciales si la lista está vacía
+            loadInitialAirports();
+
             if (airports.isEmpty()) {
-                System.out.println("AirportService.listAirports: La lista está vacía");
-                // Volver a cargar aeropuertos iniciales si la lista está vacía
-                loadInitialAirports();
-
-                if (airports.isEmpty()) {
-                    System.out.println("AirportService.listAirports: La lista sigue vacía después de intentar cargarla");
-                    return filteredList;
-                }
+                System.out.println("AirportService.listAirports: La lista sigue vacía después de intentar cargarla");
+                return filteredList;
             }
-
-            int size = airports.size();
-            System.out.println("AirportService.listAirports: Tamaño de la lista: " + size);
-
-            for (int i = 1; i <= size; i++) {
-                try {
-                    Airport airport = (Airport) airports.getNode(i).data;
-
-                    // Aplicar filtro
-                    if (filter == null || filter.isEmpty()) {
-                        filteredList.add(airport); // Listar todos
-                    } else if (filter.equals("active") && airport.getStatus().equals("active")) {
-                        filteredList.add(airport); // Solo activos
-                    } else if (filter.equals("inactive") && airport.getStatus().equals("inactive")) {
-                        filteredList.add(airport); // Solo inactivos
-                    }
-                } catch (Exception e) {
-                    System.err.println("Error procesando aeropuerto " + i + ": " + e.getMessage());
-                }
-            }
-
-            System.out.println("AirportService.listAirports: Tamaño de la lista filtrada: " + filteredList.size());
-        } catch (ListException e) {
-            System.err.println("Error al listar aeropuertos: " + e.getMessage());
         }
+
+        int size = airports.size();
+        System.out.println("AirportService.listAirports: Tamaño de la lista: " + size);
+
+        for (int i = 1; i <= size; i++) {
+            try {
+                Airport airport = (Airport) airports.getNode(i).data;
+
+                // Aplicar filtro
+                if (filter == null || filter.isEmpty()) {
+                    filteredList.add(airport); // Listar todos
+                } else if (filter.equals("active") && airport.getStatus().equals("active")) {
+                    filteredList.add(airport); // Solo activos
+                } else if (filter.equals("inactive") && airport.getStatus().equals("inactive")) {
+                    filteredList.add(airport); // Solo inactivos
+                }
+            } catch (Exception e) {
+                System.err.println("Error procesando aeropuerto " + i + ": " + e.getMessage());
+            }
+        }
+
+        System.out.println("AirportService.listAirports: Tamaño de la lista filtrada: " + filteredList.size());
 
         return filteredList;
     }
@@ -257,12 +253,8 @@ public class AirportService {
 
             System.out.println("AirportService.loadInitialAirports: Aeropuertos cargados");
 
-            try {
-                int size = airports.size();
-                System.out.println("AirportService.loadInitialAirports: Tamaño final: " + size);
-            } catch (ListException e) {
-                System.err.println("Error obteniendo tamaño después de cargar: " + e.getMessage());
-            }
+            int size = airports.size();
+            System.out.println("AirportService.loadInitialAirports: Tamaño final: " + size);
         } catch (Exception e) {
             System.err.println("Error cargando aeropuertos iniciales: " + e.getMessage());
             e.printStackTrace();

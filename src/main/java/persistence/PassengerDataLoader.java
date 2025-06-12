@@ -1,49 +1,73 @@
 package persistence;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import datastructure.tree.AVLTree;
 import domain.Passenger;
-import datastructure.list.SinglyLinkedList;
 
-import java.io.File;
-import java.util.List;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PassengerDataLoader {
     private static final String PASSENGERS_FILE = "passengers.json";
 
-    // Cargar pasajeros desde JSON
-    public static SinglyLinkedList<Passenger> loadPassengers() {
-        SinglyLinkedList<Passenger> passengers = new SinglyLinkedList<>();
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            File file = new File(PASSENGERS_FILE);
-            // Verifica si el archivo existe antes de intentar leerlo
-            if (!file.exists()) {
-                return passengers;
+    // Carga los pasajeros en un árbol AVL desde un archivo JSON
+    public static AVLTree loadPassengers() {
+        AVLTree tree = new AVLTree();
+        File file = new File(PASSENGERS_FILE);
+        if (!file.exists()) return tree;
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            StringBuilder jsonBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonBuilder.append(line.trim());
             }
-            // Carga la lista de pasajeros del archivo
-            List<Passenger> list = mapper.readValue(file, new TypeReference<List<Passenger>>() {});
-            for (Passenger p : list) {
-                passengers.add(p);
+            String json = jsonBuilder.toString();
+            if (json.startsWith("[")) json = json.substring(1);
+            if (json.endsWith("]")) json = json.substring(0, json.length() - 1);
+            String[] objects = json.split("\\},\\s*\\{");
+            for (String obj : objects) {
+                String clean = obj.replace("{", "").replace("}", "").trim();
+                if (clean.isEmpty()) continue;
+                String[] fields = clean.split(",");
+                int id = -1;
+                String name = "";
+                String nationality = "";
+                for (String field : fields) {
+                    String[] keyValue = field.split(":", 2);
+                    if (keyValue.length < 2) continue;
+                    String key = keyValue[0].trim().replace("\"", "");
+                    String value = keyValue[1].trim().replace("\"", "");
+                    if (key.equals("id")) id = Integer.parseInt(value);
+                    else if (key.equals("name")) name = value;
+                    else if (key.equals("nationality")) nationality = value;
+                }
+                if (id != -1 && !name.isEmpty() && !nationality.isEmpty()) {
+                    tree.add(new Passenger(id, name, nationality, null));
+                }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("Error loading passengers: " + e.getMessage());
         }
-        return passengers;
+        return tree;
     }
 
-    // Guardar pasajeros en JSON
-    public static void savePassengers(SinglyLinkedList<Passenger> passengers) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            List<Passenger> list = new ArrayList<>();
-            // Recorre desde 1 hasta size, asumiendo que tu SinglyLinkedList es 1-based
-            for (int i = 1; i <= passengers.size(); i++) {
-                list.add((Passenger) passengers.getNode(i).data);
+    // Guarda el árbol AVL de pasajeros en un archivo JSON
+    public static void savePassengers(AVLTree tree) {
+        List<Object> inOrder = new ArrayList<>();
+        tree.inOrderList(inOrder);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(PASSENGERS_FILE))) {
+            writer.write("[\n");
+            int size = inOrder.size();
+            for (int i = 0; i < size; i++) {
+                Passenger p = (Passenger) inOrder.get(i);
+                writer.write("  { \"id\": " + p.getId()
+                        + ", \"name\": \"" + p.getName() + "\""
+                        + ", \"nationality\": \"" + p.getNationality() + "\" }");
+                if (i < size - 1) writer.write(",");
+                writer.write("\n");
             }
-            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(PASSENGERS_FILE), list);
-        } catch (Exception e) {
+            writer.write("]\n");
+        } catch (IOException e) {
             System.err.println("Error saving passengers: " + e.getMessage());
         }
     }
