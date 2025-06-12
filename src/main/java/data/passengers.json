@@ -1,0 +1,5 @@
+[
+  { "id": 101, "name": "Carlos Vargas", "nationality": "Costa Rica", "flightHistory": [] },
+  { "id": 102, "name": "Ana Jiménez", "nationality": "Costa Rica", "flightHistory": [] },
+  { "id": 103, "name": "John Smith", "nationality": "USA", "flightHistory": [] }
+]

@@ -436,7 +436,9 @@ public class AVLTree implements Tree{
             return children(node.right, element);
         }
     }
-
+    public BTreeNode getRoot() {
+        return this.root;
+    }
     @Override
     public String toString() {
         String result="AVL Binary Search Tree Content:";

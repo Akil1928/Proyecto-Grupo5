@@ -7,8 +7,7 @@ public class Passenger {
     private String name, nationality;
     private SinglyLinkedList<Flight> flightHistory;
 
-    public Passenger() {
-    }
+    public Passenger() {}
 
     public Passenger(int id, String name, String nationality, SinglyLinkedList<Flight> flightHistory) {
         this.id = id;
@@ -17,45 +16,29 @@ public class Passenger {
         this.flightHistory = flightHistory;
     }
 
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getName() {
-        return name;
-    }
+    public String getNationality() { return nationality; }
+    public void setNationality(String nationality) { this.nationality = nationality; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getNationality() {
-        return nationality;
-    }
-
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
-
-    public SinglyLinkedList<Flight> getFlightHistory() {
-        return flightHistory;
-    }
-
-    public void setFlightHistory(SinglyLinkedList<Flight> flightHistory) {
-        this.flightHistory = flightHistory;
-    }
+    public SinglyLinkedList<Flight> getFlightHistory() { return flightHistory; }
+    public void setFlightHistory(SinglyLinkedList<Flight> flightHistory) { this.flightHistory = flightHistory; }
 
     @Override
     public String toString() {
-        return "Passenger{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", nationality='" + nationality + '\'' +
-                ", flightHistory=" + flightHistory +
-                '}';
+        return id + " - " + name + " (" + nationality + ")";
+    }
+
+    // Para búsqueda en AVLTree por id
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Passenger)) return false;
+        Passenger p = (Passenger) obj;
+        return this.id == p.id;
     }
 }
