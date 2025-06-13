@@ -2,6 +2,7 @@ package services;
 
 import domain.Flight;
 import domain.Passenger;
+import persistence.FlightDataLoader;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +15,7 @@ public class FlightService {
     private static FlightService instance; // Instancia única del servicio
 
     private FlightService() {
-        this.flightList = new ArrayList<>();
+        this.flightList = FlightDataLoader.loadFlights();
     }
 
     public static FlightService getInstance() {
@@ -35,6 +36,10 @@ public class FlightService {
 
         // Añadirlo a la lista de vuelos
         flightList.add(flight);
+
+        // Guardar los cambios en el archivo
+        saveFlights();
+
         return flight;
     }
 
@@ -42,7 +47,12 @@ public class FlightService {
     public boolean addPassengerToFlight(int flightNumber, Passenger passenger) {
         Flight flight = findFlight(flightNumber);
         if (flight != null) {
-            return flight.addPassenger(passenger);
+            boolean added = flight.addPassenger(passenger);
+            if (added) {
+                // Guardar los cambios en el archivo
+                saveFlights();
+            }
+            return added;
         }
         return false;
     }
@@ -84,19 +94,30 @@ public class FlightService {
         return flightList;
     }
 
-    // Métodos faltantes llamados desde el controlador
-    public void displayActiveFlights() {
-        // Implementación para mostrar vuelos activos
-        System.out.println("Mostrando vuelos activos");
+    // Guardar vuelos en archivo
+    private void saveFlights() {
+        FlightDataLoader.saveFlights(flightList);
     }
 
-    public void displayCompletedFlights() {
-        // Implementación para mostrar vuelos completados
-        System.out.println("Mostrando vuelos completados");
-    }
-
+    // Simular un vuelo (marcar como completado)
     public void simulateFlight(int flightNumber) {
-        // Implementación de la simulación de vuelo
-        System.out.println("Simulando vuelo #" + flightNumber);
+        Flight flight = findFlight(flightNumber);
+        if (flight != null) {
+            // Si necesitas realizar acciones adicionales al simular un vuelo,
+            // como actualizar su estado o eliminarlo de la lista de vuelos activos,
+            // hazlo aquí
+
+            // Marcar como completado (esto depende de tu modelo de datos)
+            // Por ejemplo, si un vuelo completado se elimina de la lista principal:
+            // flightList.remove(flight);
+
+            // O si se guarda en otra lista:
+            // completedFlights.add(flight);
+
+            // En cualquier caso, guardar los cambios
+            saveFlights();
+
+            System.out.println("Vuelo #" + flightNumber + " simulado exitosamente");
+        }
     }
 }

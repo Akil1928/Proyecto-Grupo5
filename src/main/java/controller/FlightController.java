@@ -22,6 +22,7 @@ import domain.Passenger;
 import services.AirportService;
 import services.FlightService;
 import services.PassengerService;
+import services.SimulationService;
 import datastructure.list.ListException;
 import datastructure.list.SinglyLinkedList;
 
@@ -87,6 +88,7 @@ public class FlightController implements Initializable {
     private FlightService flightService = FlightService.getInstance();
     private PassengerService passengerService = PassengerService.getInstance();
     private AirportService airportService = AirportService.getInstance();
+    private SimulationService simulationService = SimulationService.getInstance();
 
     private Flight selectedFlight;
     private ObservableList<Passenger> flightPassengers;
@@ -360,6 +362,9 @@ public class FlightController implements Initializable {
 
         // Crear ventana de simulación
         try {
+            // Obtener el reporte de simulación
+            String simulationReport = simulationService.simulateFlight(selectedFlight.getNumber());
+
             VBox simulationBox = new VBox(10);
             simulationBox.setPadding(new javafx.geometry.Insets(20));
 
@@ -367,73 +372,15 @@ public class FlightController implements Initializable {
             Label titleLabel = new Label("Simulación de Vuelo " + selectedFlight.getNumber());
             titleLabel.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
 
-            // Información del vuelo
-            Label infoLabel = new Label(
-                    "Origen: " + selectedFlight.getOrigin() + "\n" +
-                            "Destino: " + selectedFlight.getDestination() + "\n" +
-                            "Salida: " + selectedFlight.getDepartureTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + "\n" +
-                            "Capacidad: " + selectedFlight.getCapacity() + "\n" +
-                            "Ocupación: " + selectedFlight.getOccupancy() + " pasajeros"
-            );
-
-            // Etapa 1: Embarque
-            Label boardingLabel = new Label("Etapa 1: Embarque de pasajeros");
-            boardingLabel.setStyle("-fx-font-weight: bold;");
-
-            TextArea boardingArea = new TextArea();
-            boardingArea.setPrefHeight(100);
-            boardingArea.setEditable(false);
-
-            for (Passenger p : selectedFlight.getPassengers()) {
-                boardingArea.appendText("Embarcando pasajero: " + p.getId() + " - " + p.getName() + "\n");
-            }
-
-            // Etapa 2: Despegue
-            Label takeoffLabel = new Label("Etapa 2: Despegue");
-            takeoffLabel.setStyle("-fx-font-weight: bold;");
-
-            TextArea takeoffArea = new TextArea();
-            takeoffArea.setPrefHeight(50);
-            takeoffArea.setEditable(false);
-            takeoffArea.setText("El vuelo " + selectedFlight.getNumber() + " ha despegado desde " + selectedFlight.getOrigin() + "\n");
-
-            // Etapa 3: Vuelo en progreso
-            Label flightLabel = new Label("Etapa 3: Vuelo en progreso");
-            flightLabel.setStyle("-fx-font-weight: bold;");
-
-            TextArea flightArea = new TextArea();
-            flightArea.setPrefHeight(50);
-            flightArea.setEditable(false);
-            flightArea.setText("El vuelo " + selectedFlight.getNumber() + " está en ruta de " +
-                    selectedFlight.getOrigin() + " a " + selectedFlight.getDestination() + "\n");
-
-            // Etapa 4: Aterrizaje
-            Label landingLabel = new Label("Etapa 4: Aterrizaje");
-            landingLabel.setStyle("-fx-font-weight: bold;");
-
-            TextArea landingArea = new TextArea();
-            landingArea.setPrefHeight(50);
-            landingArea.setEditable(false);
-            landingArea.setText("El vuelo " + selectedFlight.getNumber() + " ha aterrizado en " + selectedFlight.getDestination() + "\n");
-
-            // Etapa 5: Desembarque
-            Label deboardingLabel = new Label("Etapa 5: Desembarque de pasajeros");
-            deboardingLabel.setStyle("-fx-font-weight: bold;");
-
-            TextArea deboardingArea = new TextArea();
-            deboardingArea.setPrefHeight(100);
-            deboardingArea.setEditable(false);
-
-            for (Passenger p : selectedFlight.getPassengers()) {
-                deboardingArea.appendText("Desembarcando pasajero: " + p.getId() + " - " + p.getName() + "\n");
-            }
+            // Área de texto para mostrar el reporte
+            TextArea reportArea = new TextArea(simulationReport);
+            reportArea.setPrefHeight(500);
+            reportArea.setEditable(false);
+            reportArea.setWrapText(true);
 
             // Botón para cerrar
             Button closeButton = new Button("Cerrar");
             closeButton.setOnAction(e -> {
-                // Llamar a simular vuelo en el servicio
-                flightService.simulateFlight(selectedFlight.getNumber());
-
                 // Cerrar la ventana
                 ((Stage) closeButton.getScene().getWindow()).close();
 
@@ -445,12 +392,8 @@ public class FlightController implements Initializable {
 
             // Agregar todos los elementos al contenedor
             simulationBox.getChildren().addAll(
-                    titleLabel, infoLabel,
-                    boardingLabel, boardingArea,
-                    takeoffLabel, takeoffArea,
-                    flightLabel, flightArea,
-                    landingLabel, landingArea,
-                    deboardingLabel, deboardingArea,
+                    titleLabel,
+                    reportArea,
                     closeButton
             );
 
@@ -458,12 +401,25 @@ public class FlightController implements Initializable {
             Stage simulationStage = new Stage();
             simulationStage.setTitle("Simulación de Vuelo");
             simulationStage.initModality(Modality.APPLICATION_MODAL);
-            simulationStage.setScene(new Scene(simulationBox, 500, 700));
+            simulationStage.setScene(new Scene(simulationBox, 500, 600));
             simulationStage.showAndWait();
 
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Error en simulación",
                     "Error al simular el vuelo: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Método para volver al dashboard
+    @FXML
+    void regresarOnAction(ActionEvent event) {
+        try {
+            Parent dashboard = FXMLLoader.load(getClass().getResource("/dashboard.fxml"));
+            BorderPane root = (BorderPane) ((Button)event.getSource()).getScene().getRoot();
+            root.setCenter(dashboard);
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar el dashboard: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -503,15 +459,4 @@ public class FlightController implements Initializable {
         alert.setContentText(content);
         alert.showAndWait();
     }
-    @FXML
-    public void regresarOnAction(ActionEvent event) {
-        try {
-            Parent dashboard = FXMLLoader.load(getClass().getResource("/dashboard.fxml"));
-            BorderPane root = (BorderPane) ((Button)event.getSource()).getScene().getRoot();
-            root.setCenter(dashboard);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }
