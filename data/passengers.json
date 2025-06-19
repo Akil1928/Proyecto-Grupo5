@@ -1,0 +1,9 @@
+[
+  { "id": 101, "name": "Carlos Vargas", "nationality": "Costa Rica", "flightHistory": [] },
+  { "id": 102, "name": "Ana Jiménez", "nationality": "Costa Rica", "flightHistory": [] },
+  { "id": 103, "name": "John Smith", "nationality": "USA", "flightHistory": [] },
+  { "id": 119690227, "name": "Javier Moreno", "nationality": "Costa Rica", "flightHistory": [] },
+  { "id": 119590075, "name": "Cadima Cerdas", "nationality": "Costa Rica", "flightHistory": [] },
+  { "id": 1175689784, "name": "Juan Sanchez", "nationality": "Costa Rica", "flightHistory": [] },
+  { "id": 1185823564, "name": "Joel Loria", "nationality": "Costa Rica", "flightHistory": [] }
+]

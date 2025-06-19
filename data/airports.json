@@ -1,0 +1,62 @@
+[
+  {
+    "code": "SJO",
+    "name": "Aeropuerto Internacional Juan Santamaría",
+    "country": "Costa Rica",
+    "status": "active"
+  },
+  {
+    "code": "LIR",
+    "name": "Aeropuerto Internacional Daniel Oduber",
+    "country": "Costa Rica",
+    "status": "active"
+  },
+  {
+    "code": "MIA",
+    "name": "Aeropuerto Internacional de Miami",
+    "country": "Estados Unidos",
+    "status": "active"
+  },
+  {
+    "code": "LAX",
+    "name": "Aeropuerto Internacional de Los Ángeles",
+    "country": "Estados Unidos",
+    "status": "active"
+  },
+  {
+    "code": "JFK",
+    "name": "Aeropuerto Internacional John F. Kennedy",
+    "country": "Estados Unidos",
+    "status": "active"
+  },
+  {
+    "code": "MEX",
+    "name": "Aeropuerto Internacional Benito Juárez",
+    "country": "México",
+    "status": "active"
+  },
+  {
+    "code": "MAD",
+    "name": "Aeropuerto Adolfo Suárez Madrid-Barajas",
+    "country": "España",
+    "status": "active"
+  },
+  {
+    "code": "FCO",
+    "name": "Aeropuerto Leonardo da Vinci-Fiumicino",
+    "country": "Italia",
+    "status": "active"
+  },
+  {
+    "code": "CDG",
+    "name": "Aeropuerto Charles de Gaulle",
+    "country": "Francia",
+    "status": "active"
+  },
+  {
+    "code": "LHR",
+    "name": "Aeropuerto de Londres-Heathrow",
+    "country": "Reino Unido",
+    "status": "inactive"
+  }
+]
