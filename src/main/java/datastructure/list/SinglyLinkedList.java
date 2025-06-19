@@ -270,4 +270,26 @@ public class SinglyLinkedList<T> implements List<T> {
         }
         return result;
     }
+
+    public T get(int i) throws ListException {
+        if (isEmpty()) {
+            throw new ListException("Singly Linked List is Empty");
+        }
+
+        // Verifica si el índice está fuera de los límites
+        if (i < 0 || i >= size()) {  // Nota: cambiado de "i < 1 || i > size()" para usar índice base 0
+            throw new ListException("Index out of bounds");
+        }
+
+        // Lógica para obtener el elemento en la posición i
+        Node<T> current = first;
+        int count = 0;
+
+        while (count < i) {
+            current = current.next;
+            count++;
+        }
+
+        return current.data;
+    }
 }

@@ -95,7 +95,7 @@ public class FlightService {
     }
 
     // Guardar vuelos en archivo
-    private void saveFlights() {
+    public void saveFlights() {
         FlightDataLoader.saveFlights(flightList);
     }
 

@@ -1,5 +1,7 @@
 package controller;
 
+import datastructure.list.ListException;
+import datastructure.list.SinglyLinkedList;
 import datastructure.tree.AVLTree;
 import datastructure.tree.BTreeNode;
 import domain.Passenger;
@@ -15,6 +17,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import persistence.PassengerDataLoader;
+import services.PersonService;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,14 +42,22 @@ public class PassengerManagementController {
     }
 
     private void loadPassengersToTable() {
-        passengerTree = PassengerDataLoader.loadPassengers();
+        System.out.println("PassengerManagementController: Cargando pasajeros...");
+
+        PersonService personService = PersonService.getInstance();
+        SinglyLinkedList<Passenger> allPassengers = personService.getAllPassengers();
+
         observablePassengers = FXCollections.observableArrayList();
-        List<Object> inOrder = new ArrayList<>();
-        passengerTree.inOrderList(inOrder);
-        for (Object obj : inOrder) {
-            observablePassengers.add((Passenger) obj);
+        for (int i = 0; i < allPassengers.size(); i++) {
+            try {
+                observablePassengers.add(allPassengers.get(i));
+            } catch (ListException e) {
+                throw new RuntimeException(e);
+            }
         }
+
         tablePassengers.setItems(observablePassengers);
+        System.out.println("PassengerManagementController: " + observablePassengers.size() + " pasajeros cargados");
     }
 
     @FXML
@@ -59,14 +71,23 @@ public class PassengerManagementController {
             dialogStage.setScene(new Scene(root));
             AddPassengerDialogController controller = loader.getController();
             dialogStage.showAndWait();
+
             if (controller.isSaved()) {
                 Passenger newP = controller.getPassenger();
-                passengerTree.add(newP);
-                observablePassengers.add(newP);
-                tablePassengers.refresh();
-                // PassengerDataLoader.savePassengers(passengerTree); // Solo guarda si quieres guardar inmediato
+
+                PersonService.getInstance().addPassenger(newP);
+
+                // Refrescar tabla
+                loadPassengersToTable();
+
+                System.out.println("PassengerManagementController: Pasajero guardado automáticamente - " + newP.getName());
+
+                // Mostrar confirmación
+                new Alert(Alert.AlertType.INFORMATION,
+                        "Pasajero '" + newP.getName() + "' agregado y guardado exitosamente!").showAndWait();
             }
         } catch (IOException e) {
+            System.err.println("PassengerManagementController: Error al agregar pasajero - " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -82,6 +103,7 @@ public class PassengerManagementController {
             dialogStage.setScene(new Scene(root));
             DeletePassengerDialogController controller = loader.getController();
             dialogStage.showAndWait();
+
             if (controller.isDeleted()) {
                 int id = controller.getIdToDelete();
                 Passenger toDelete = null;
@@ -92,15 +114,23 @@ public class PassengerManagementController {
                     }
                 }
                 if (toDelete != null) {
-                    passengerTree.remove(toDelete);
-                    observablePassengers.remove(toDelete);
-                    tablePassengers.refresh();
-                    // PassengerDataLoader.savePassengers(passengerTree); // Solo guarda si quieres guardar inmediato
+
+                    PersonService.getInstance().removePassenger(toDelete.getId());
+
+                    // Refrescar tabla
+                    loadPassengersToTable();
+
+                    System.out.println("PassengerManagementController: Pasajero eliminado automáticamente - " + toDelete.getName());
+
+                    // Mostrar confirmación
+                    new Alert(Alert.AlertType.INFORMATION,
+                            "Pasajero '" + toDelete.getName() + "' eliminado y guardado exitosamente!").showAndWait();
                 } else {
                     new Alert(Alert.AlertType.WARNING, "No se encontró pasajero con esa cédula.").showAndWait();
                 }
             }
         } catch (IOException e) {
+            System.err.println("PassengerManagementController: Error al eliminar pasajero - " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -108,26 +138,30 @@ public class PassengerManagementController {
     @FXML
     private void historialOnAction() {
         // Aquí va tu lógica de historial (si la implementas)
+        System.out.println("PassengerManagementController: Función historial pendiente de implementar");
     }
 
     @FXML
     public void guardarCambiosOnAction(ActionEvent event) {
-        PassengerDataLoader.savePassengers(passengerTree);
-        new Alert(Alert.AlertType.INFORMATION, "¡Cambios guardados correctamente!").showAndWait();
+        System.out.println("PassengerManagementController: Guardado manual solicitado");
+        PersonService.getInstance().savePassengers();
+        new Alert(Alert.AlertType.INFORMATION,
+                "¡" + observablePassengers.size() + " pasajeros guardados correctamente!").showAndWait();
     }
 
     @FXML
     public void regresarOnAction(ActionEvent event) {
         try {
+            System.out.println("PassengerManagementController: Regresando al dashboard");
             Parent dashboard = FXMLLoader.load(getClass().getResource("/dashboard.fxml"));
             BorderPane root = (BorderPane) ((Button)event.getSource()).getScene().getRoot();
             root.setCenter(dashboard);
         } catch (IOException e) {
+            System.err.println("PassengerManagementController: Error al regresar - " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    // Si necesitas buscar pasajero por id en el árbol:
     private Passenger findPassengerById(int id) {
         return findPassengerById(passengerTree.getRoot(), id);
     }

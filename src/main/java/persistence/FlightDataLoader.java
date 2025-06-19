@@ -1,14 +1,10 @@
-
 package persistence;
 
-import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 import domain.Flight;
 import domain.Passenger;
-import services.PassengerService;
+import services.PersonService; // ✅ CORRECTO: usar "services"
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -19,8 +15,7 @@ public class FlightDataLoader {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     /**
-     * Carga todos los vuelos desde el archivo JSON.
-     * @return Lista de vuelos
+     * Carga todos los vuelos desde el archivo JSON usando parsing manual
      */
     public static List<Flight> loadFlights() {
         List<Flight> flights = new ArrayList<>();
@@ -35,59 +30,125 @@ public class FlightDataLoader {
             return flights;
         }
 
-        try (Reader reader = new FileReader(FLIGHTS_FILE)) {
-            // Crear un deserializador personalizado para LocalDateTime
-            JsonDeserializer<LocalDateTime> dateTimeDeserializer = (json, typeOfT, context) ->
-                    LocalDateTime.parse(json.getAsString(), formatter);
+        try (BufferedReader reader = new BufferedReader(new FileReader(FLIGHTS_FILE))) {
+            StringBuilder jsonBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonBuilder.append(line.trim());
+            }
 
-            // Crear Gson con adaptadores personalizados
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(LocalDateTime.class, dateTimeDeserializer)
-                    .create();
+            String json = jsonBuilder.toString();
+            if (json.isEmpty() || json.equals("[]")) return flights;
 
-            // Definir el tipo para la deserialización
-            Type flightListType = new TypeToken<List<JsonFlight>>(){}.getType();
+            // Remover corchetes externos
+            if (json.startsWith("[")) json = json.substring(1);
+            if (json.endsWith("]")) json = json.substring(0, json.length() - 1);
 
-            // Leer la lista de JsonFlight desde el archivo
-            List<JsonFlight> jsonFlights = gson.fromJson(reader, flightListType);
+            // Dividir por objetos
+            String[] objects = json.split("\\},\\s*\\{");
 
-            if (jsonFlights != null) {
-                PassengerService passengerService = PassengerService.getInstance();
+            // ✅ Usar PersonService correctamente
+            PersonService personService = PersonService.getInstance();
 
-                for (JsonFlight jsonFlight : jsonFlights) {
-                    // Crear el vuelo
-                    Flight flight = new Flight(
-                            jsonFlight.number,
-                            jsonFlight.origin,
-                            jsonFlight.destination,
-                            LocalDateTime.parse(jsonFlight.departureTime, formatter),
-                            jsonFlight.capacity
-                    );
+            for (String obj : objects) {
+                String clean = obj.replace("{", "").replace("}", "").trim();
+                if (clean.isEmpty()) continue;
 
-                    // Agregar pasajeros al vuelo
-                    if (jsonFlight.passengerIds != null) {
-                        for (int passengerId : jsonFlight.passengerIds) {
-                            Passenger passenger = passengerService.getPassengerById(passengerId);
+                // Parsear campos del vuelo
+                int number = -1;
+                String origin = "";
+                String destination = "";
+                String departureTime = "";
+                int capacity = 0;
+                List<Integer> passengerIds = new ArrayList<>(); // ✅ IDs como Integer
+
+                String[] fields = clean.split(",");
+                for (String field : fields) {
+                    String[] keyValue = field.split(":", 2);
+                    if (keyValue.length < 2) continue;
+
+                    String key = keyValue[0].trim().replace("\"", "");
+                    String value = keyValue[1].trim();
+
+                    switch (key) {
+                        case "number":
+                            number = Integer.parseInt(value);
+                            break;
+                        case "origin":
+                            origin = value.replace("\"", "");
+                            break;
+                        case "destination":
+                            destination = value.replace("\"", "");
+                            break;
+                        case "departureTime":
+                            departureTime = value.replace("\"", "");
+                            break;
+                        case "capacity":
+                            capacity = Integer.parseInt(value);
+                            break;
+                        case "passengerIds":
+                            value = value.replace("[", "").replace("]", "");
+                            if (!value.trim().isEmpty()) {
+                                String[] ids = value.split(",");
+                                for (String id : ids) {
+                                    String cleanId = id.trim().replace("\"", "");
+                                    if (!cleanId.isEmpty()) {
+                                        try {
+                                            // ✅ Convertir a int
+                                            int passengerId = Integer.parseInt(cleanId);
+                                            passengerIds.add(passengerId);
+                                        } catch (NumberFormatException e) {
+                                            System.err.println("ID de pasajero inválido: " + cleanId);
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                }
+
+                // Crear el vuelo si tenemos datos válidos
+                if (number != -1 && !origin.isEmpty() && !destination.isEmpty() && !departureTime.isEmpty()) {
+                    try {
+                        Flight flight = new Flight(
+                                number,
+                                origin,
+                                destination,
+                                LocalDateTime.parse(departureTime, formatter),
+                                capacity
+                        );
+
+                        // ✅ Agregar pasajeros al vuelo usando PersonService
+                        for (Integer passengerId : passengerIds) {
+                            Passenger passenger = personService.findPassengerById(passengerId);
                             if (passenger != null) {
                                 flight.addPassenger(passenger);
+                                System.out.println("✓ Pasajero " + passenger.getName() + " agregado al vuelo " + number);
+                            } else {
+                                System.out.println("⚠ Pasajero con ID " + passengerId + " no encontrado");
                             }
                         }
-                    }
 
-                    flights.add(flight);
+                        flights.add(flight);
+                        System.out.println("✓ Vuelo " + number + " cargado con " + flight.getPassengers().size() + " pasajeros");
+
+                    } catch (Exception e) {
+                        System.err.println("Error creando vuelo: " + e.getMessage());
+                    }
                 }
             }
+
         } catch (Exception e) {
             System.err.println("Error al cargar vuelos: " + e.getMessage());
             e.printStackTrace();
         }
 
+        System.out.println("✓ Total de vuelos cargados: " + flights.size());
         return flights;
     }
 
     /**
-     * Guarda todos los vuelos en el archivo JSON.
-     * @param flights Lista de vuelos a guardar
+     * Guarda todos los vuelos en el archivo JSON usando escritura manual
      */
     public static void saveFlights(List<Flight> flights) {
         try {
@@ -97,56 +158,48 @@ public class FlightDataLoader {
                 directory.mkdirs();
             }
 
-            // Crear serializer personalizado para LocalDateTime
-            JsonSerializer<LocalDateTime> dateTimeSerializer = (src, typeOfSrc, context) ->
-                    new JsonPrimitive(src.format(formatter));
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(FLIGHTS_FILE))) {
+                writer.write("[\n");
 
-            // Crear Gson con adaptadores personalizados
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(LocalDateTime.class, dateTimeSerializer)
-                    .setPrettyPrinting()
-                    .create();
+                int size = flights.size();
+                for (int i = 0; i < size; i++) {
+                    Flight flight = flights.get(i);
 
-            // Convertir vuelos a formato JSON simplificado
-            List<JsonFlight> jsonFlights = new ArrayList<>();
-            for (Flight flight : flights) {
-                JsonFlight jsonFlight = new JsonFlight();
-                jsonFlight.number = flight.getNumber();
-                jsonFlight.origin = flight.getOrigin();
-                jsonFlight.destination = flight.getDestination();
-                jsonFlight.departureTime = flight.getDepartureTime().format(formatter);
-                jsonFlight.capacity = flight.getCapacity();
-                jsonFlight.occupancy = flight.getOccupancy();
+                    writer.write("  {\n");
+                    writer.write("    \"number\": " + flight.getNumber() + ",\n");
+                    writer.write("    \"origin\": \"" + flight.getOrigin() + "\",\n");
+                    writer.write("    \"destination\": \"" + flight.getDestination() + "\",\n");
+                    writer.write("    \"departureTime\": \"" + flight.getDepartureTime().format(formatter) + "\",\n");
+                    writer.write("    \"capacity\": " + flight.getCapacity() + ",\n");
+                    writer.write("    \"occupancy\": " + flight.getOccupancy() + ",\n");
 
-                // Guardar solo los IDs de los pasajeros
-                List<Integer> passengerIds = new ArrayList<>();
-                for (Passenger passenger : flight.getPassengers()) {
-                    passengerIds.add(passenger.getId());
+                    // Escribir array de passenger IDs
+                    writer.write("    \"passengerIds\": [");
+                    List<Passenger> passengers = flight.getPassengers();
+                    for (int j = 0; j < passengers.size(); j++) {
+                        // ✅ CORRECTO: getId() devuelve int, lo guardamos como número
+                        writer.write(passengers.get(j).getId());
+                        if (j < passengers.size() - 1) {
+                            writer.write(", ");
+                        }
+                    }
+                    writer.write("]\n");
+
+                    writer.write("  }");
+                    if (i < size - 1) {
+                        writer.write(",");
+                    }
+                    writer.write("\n");
                 }
-                jsonFlight.passengerIds = passengerIds;
 
-                jsonFlights.add(jsonFlight);
+                writer.write("]\n");
             }
 
-            // Escribir al archivo
-            try (Writer writer = new FileWriter(FLIGHTS_FILE)) {
-                gson.toJson(jsonFlights, writer);
-            }
+            System.out.println("✓ Vuelos guardados exitosamente en " + FLIGHTS_FILE);
 
         } catch (Exception e) {
             System.err.println("Error al guardar vuelos: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    // Clase auxiliar para serialización/deserialización
-    private static class JsonFlight {
-        int number;
-        String origin;
-        String destination;
-        String departureTime;
-        int capacity;
-        int occupancy;
-        List<Integer> passengerIds;
     }
 }

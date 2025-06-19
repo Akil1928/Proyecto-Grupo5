@@ -293,4 +293,150 @@ public class AirportService {
         }
         System.out.println("======================================");
     }
+    // Agrega este método a tu clase AirportService
+
+    /**
+     * Guarda los aeropuertos en un archivo
+     * @return true si se guardó exitosamente, false en caso contrario
+     */
+    public boolean saveAirports() {
+        try {
+            System.out.println("AirportService.saveAirports: Iniciando guardado de aeropuertos");
+
+            // Verificar si hay aeropuertos para guardar
+            if (airports.isEmpty()) {
+                System.out.println("AirportService.saveAirports: Lista vacía, guardando archivo vacío");
+            }
+            // Crear el contenido JSON manualmente
+            StringBuilder json = new StringBuilder();
+            json.append("[\n");
+
+            boolean first = true;
+            int size = airports.size();
+            System.out.println("AirportService.saveAirports: Guardando " + size + " aeropuertos");
+
+            for (int i = 1; i <= size; i++) {
+                try {
+                    Airport airport = (Airport) airports.getNode(i).data;
+
+                    if (!first) {
+                        json.append(",\n");
+                    }
+                    first = false;
+
+                    json.append("  {\n");
+                    json.append("    \"code\": \"").append(airport.getCode()).append("\",\n");
+                    json.append("    \"name\": \"").append(airport.getName()).append("\",\n");
+                    json.append("    \"country\": \"").append(airport.getCountry()).append("\",\n");
+                    json.append("    \"status\": \"").append(airport.getStatus()).append("\"\n");
+                    json.append("  }");
+
+                } catch (ListException e) {
+                    System.err.println("AirportService.saveAirports: Error accediendo al aeropuerto en índice " + i + ": " + e.getMessage());
+                    continue;
+                }
+            }
+
+            json.append("\n]");
+            // Escribir al archivo
+            java.io.File file = new java.io.File("data/airports.json");
+            file.getParentFile().mkdirs(); // Crear directorio si no existe
+
+            try (java.io.FileWriter writer = new java.io.FileWriter(file)) {
+                writer.write(json.toString());
+            }
+
+            System.out.println("AirportService.saveAirports: Aeropuertos guardados exitosamente en: " + file.getAbsolutePath());
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("AirportService.saveAirports: Error guardando aeropuertos: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Carga aeropuertos desde archivo al iniciar el servicio
+     */
+    public void loadAirports() {
+        try {
+            java.io.File file = new java.io.File("data/airports.json");
+            if (!file.exists()) {
+                System.out.println("AirportService.loadAirports: Archivo no existe, usando aeropuertos iniciales");
+                return;
+            }
+
+            // Leer el archivo
+            StringBuilder content = new StringBuilder();
+            try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    content.append(line).append("\n");
+                }
+            }
+
+            String jsonContent = content.toString().trim();
+            if (jsonContent.isEmpty() || jsonContent.equals("[]")) {
+                System.out.println("AirportService.loadAirports: Archivo vacío, usando aeropuertos iniciales");
+                return;
+            }
+
+            // Limpiar la lista actual
+            airports = new SinglyLinkedList<>();
+
+            // Parsear JSON manualmente
+            String[] airportBlocks = jsonContent.split("\\},\\s*\\{");
+
+            for (String block : airportBlocks) {
+                try {
+                    // Limpiar el bloque
+                    block = block.replace("[", "").replace("]", "")
+                            .replace("{", "").replace("}", "").trim();
+
+                    if (block.isEmpty()) continue;
+
+                    // Extraer campos
+                    String code = extractJsonValue(block, "code");
+                    String name = extractJsonValue(block, "name");
+                    String country = extractJsonValue(block, "country");
+                    String status = extractJsonValue(block, "status");
+
+                    // Crear aeropuerto usando tu constructor
+                    Airport airport = new Airport(code, name, country, status);
+
+                    // Agregar a la lista
+                    airports.add(airport);
+
+                } catch (Exception e) {
+                    System.err.println("AirportService.loadAirports: Error procesando aeropuerto: " + e.getMessage());
+                }
+            }
+
+            System.out.println("AirportService.loadAirports: " + airports.size() + " aeropuertos cargados desde archivo");
+
+        } catch (Exception e) {
+            System.err.println("AirportService.loadAirports: Error cargando aeropuertos: " + e.getMessage());
+            e.printStackTrace();
+            // Si hay error, cargar aeropuertos iniciales
+            loadInitialAirports();
+        }
+    }
+
+    /**
+     * Método auxiliar para extraer valores del JSON
+     */
+    private String extractJsonValue(String jsonBlock, String key) {
+        try {
+            String pattern = "\"" + key + "\"\\s*:\\s*\"([^\"]+)\"";
+            java.util.regex.Pattern p = java.util.regex.Pattern.compile(pattern);
+            java.util.regex.Matcher m = p.matcher(jsonBlock);
+            if (m.find()) {
+                return m.group(1);
+            }
+        } catch (Exception e) {
+            System.err.println("Error extrayendo valor JSON para " + key + ": " + e.getMessage());
+        }
+        return "";
+    }
 }

@@ -1,6 +1,6 @@
-
 package controller;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,8 +21,8 @@ import domain.Flight;
 import domain.Passenger;
 import services.AirportService;
 import services.FlightService;
-import services.PassengerService;
 import services.SimulationService;
+import services.PersonService;  // Ya estaba importado
 import datastructure.list.ListException;
 import datastructure.list.SinglyLinkedList;
 
@@ -86,7 +86,7 @@ public class FlightController implements Initializable {
     private ComboBox<Passenger> passengerComboBox;
 
     private FlightService flightService = FlightService.getInstance();
-    private PassengerService passengerService = PassengerService.getInstance();
+    private PersonService personService = PersonService.getInstance();
     private AirportService airportService = AirportService.getInstance();
     private SimulationService simulationService = SimulationService.getInstance();
 
@@ -132,6 +132,20 @@ public class FlightController implements Initializable {
 
         // Cargar datos iniciales (si los hay)
         updateFlightTable();
+
+        // Agregar listener para guardar automáticamente al cerrar la aplicación
+        Platform.runLater(() -> {
+            try {
+                Stage stage = (Stage) flightTable.getScene().getWindow();
+                if (stage != null) {
+                    stage.setOnCloseRequest(event -> {
+                        saveAllData();
+                    });
+                }
+            } catch (Exception e) {
+                System.out.println("No se pudo configurar el listener de cierre: " + e.getMessage());
+            }
+        });
     }
 
     private void loadAirports() {
@@ -183,30 +197,51 @@ public class FlightController implements Initializable {
     }
 
     private void loadPassengers() {
-        List<Passenger> passengers = passengerService.getAllPassengers();
-        if (passengers != null && !passengers.isEmpty()) {
-            passengerComboBox.getItems().clear();
-            passengerComboBox.getItems().addAll(passengers);
+        try {
+            // Usar PersonService en lugar de PassengerService
+            SinglyLinkedList<Passenger> passengers = personService.getAllPassengers();
 
-            // Configurar cómo se muestran los pasajeros
-            StringConverter<Passenger> passengerConverter = new StringConverter<>() {
-                @Override
-                public String toString(Passenger passenger) {
-                    if (passenger == null) return "";
-                    return passenger.getId() + " - " + passenger.getName() + " (" + passenger.getNationality() + ")";
+            if (passengers != null && !passengers.isEmpty()) {
+                passengerComboBox.getItems().clear();
+
+                // Recorrer la lista y agregar cada pasajero al ComboBox
+                for (int i = 0; i < passengers.size(); i++) {
+                    try {
+                        Passenger passenger = passengers.get(i);
+                        passengerComboBox.getItems().add(passenger);
+                    } catch (ListException e) {
+                        System.err.println("Error al acceder al pasajero en posición " + i + ": " + e.getMessage());
+                    }
                 }
 
-                @Override
-                public Passenger fromString(String string) {
-                    return null; // No necesitamos esta dirección
-                }
-            };
+                // Configurar cómo se muestran los pasajeros
+                StringConverter<Passenger> passengerConverter = new StringConverter<>() {
+                    @Override
+                    public String toString(Passenger passenger) {
+                        if (passenger == null) return "";
+                        return passenger.getId() + " - " + passenger.getName() + " (" + passenger.getNationality() + ")";
+                    }
 
-            passengerComboBox.setConverter(passengerConverter);
-            passengerComboBox.getSelectionModel().selectFirst();
-        } else {
-            showAlert(Alert.AlertType.WARNING, "Pasajeros no disponibles",
-                    "No hay pasajeros registrados en el sistema. Por favor, registre algunos pasajeros primero.");
+                    @Override
+                    public Passenger fromString(String string) {
+                        return null; // No necesitamos esta dirección
+                    }
+                };
+
+                passengerComboBox.setConverter(passengerConverter);
+
+                // Solo seleccionar si hay elementos
+                if (!passengerComboBox.getItems().isEmpty()) {
+                    passengerComboBox.getSelectionModel().selectFirst();
+                }
+            } else {
+                showAlert(Alert.AlertType.WARNING, "Pasajeros no disponibles",
+                        "No hay pasajeros registrados en el sistema. Por favor, registre algunos pasajeros primero.");
+            }
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error al cargar pasajeros",
+                    "No se pudieron cargar los pasajeros: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -254,9 +289,13 @@ public class FlightController implements Initializable {
             // Crear vuelo
             Flight flight = flightService.createFlight(flightNumber, origin, destination, departureTime, capacity);
 
+            // GUARDAR AUTOMÁTICAMENTE después de crear
+            flightService.saveFlights();
+            System.out.println("✓ Vuelo creado y guardado automáticamente");
+
             // Mostrar confirmación
             showAlert(Alert.AlertType.INFORMATION, "Vuelo creado",
-                    "El vuelo número " + flightNumber + " ha sido creado exitosamente:\n" +
+                    "El vuelo número " + flightNumber + " ha sido creado y guardado exitosamente:\n" +
                             "Origen: " + originComboBox.getValue().getName() + " (" + origin + ")\n" +
                             "Destino: " + destinationComboBox.getValue().getName() + " (" + destination + ")\n" +
                             "Salida: " + departureDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
@@ -299,8 +338,15 @@ public class FlightController implements Initializable {
         boolean added = flightService.addPassengerToFlight(selectedFlight.getNumber(), selectedPassenger);
 
         if (added) {
+            // ASEGURARA que el pasajero esté en el sistema global
+            PersonService.getInstance().addPassenger(selectedPassenger);
+
+            // GUARDAR AUTOMÁTICAMENTE después de agregar pasajero
+            flightService.saveFlights();
+            System.out.println("✓ Pasajero agregado y datos guardados automáticamente");
+
             showAlert(Alert.AlertType.INFORMATION, "Pasajero agregado",
-                    "El pasajero " + selectedPassenger.getName() + " ha sido agregado al vuelo " + selectedFlight.getNumber());
+                    "El pasajero " + selectedPassenger.getName() + " ha sido agregado y guardado al vuelo " + selectedFlight.getNumber());
 
             // Actualizar historial de vuelos del pasajero
             try {
@@ -365,6 +411,10 @@ public class FlightController implements Initializable {
             // Obtener el reporte de simulación
             String simulationReport = simulationService.simulateFlight(selectedFlight.getNumber());
 
+            // GUARDAR AUTOMÁTICAMENTE después de simular
+            flightService.saveFlights();
+            System.out.println("✓ Vuelo simulado y datos guardados automáticamente");
+
             VBox simulationBox = new VBox(10);
             simulationBox.setPadding(new javafx.geometry.Insets(20));
 
@@ -415,8 +465,11 @@ public class FlightController implements Initializable {
     @FXML
     void regresarOnAction(ActionEvent event) {
         try {
+            // Guardar datos antes de salir
+            saveAllData();
+
             Parent dashboard = FXMLLoader.load(getClass().getResource("/dashboard.fxml"));
-            BorderPane root = (BorderPane) ((Button)event.getSource()).getScene().getRoot();
+            BorderPane root = (BorderPane) ((Button) event.getSource()).getScene().getRoot();
             root.setCenter(dashboard);
         } catch (IOException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar el dashboard: " + e.getMessage());
@@ -458,5 +511,37 @@ public class FlightController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void handleGuardarCambios(ActionEvent event) {
+        saveAllData();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Guardar Cambios");
+        alert.setHeaderText(null);
+        alert.setContentText("Los cambios en los vuelos se han guardado correctamente.");
+        alert.showAndWait();
+    }
+
+    private void saveAllData() {
+        try {
+            flightService.saveFlights();
+            System.out.println(" Datos de vuelos guardados automáticamente");
+
+            //
+            PersonService.getInstance().savePassengers();
+            System.out.println(" Datos de pasajeros guardados automáticamente");
+
+            try {
+                airportService.saveAirports();
+                System.out.println(" Datos de aeropuertos guardados automáticamente");
+            } catch (Exception e) {
+                System.out.println(" No se pudieron guardar aeropuertos: " + e.getMessage());
+            }
+
+        } catch (Exception e) {
+            System.err.println(" Error al guardar datos: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
