@@ -96,7 +96,7 @@
                             </font>
                         </Label>
                         <Label styleClass="label section-header" text="Administrar Rutas" textAlignment="CENTER" wrapText="true" />
-                        <Button styleClass="button" text="Acceder" />
+                        <Button onAction="#rutasOnAction" styleClass="button" text="Acceder" />
                     </VBox>
 
                     <VBox alignment="CENTER" prefHeight="150.0" prefWidth="200.0" spacing="15.0" styleClass="card" GridPane.columnIndex="2" GridPane.rowIndex="0">

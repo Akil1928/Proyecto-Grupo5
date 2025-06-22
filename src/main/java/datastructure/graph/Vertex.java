@@ -5,7 +5,7 @@ import datastructure.list.SinglyLinkedList;
 public class Vertex {
     public Object data;
     private boolean visited; //para los recorridos DFS, BFS
-    public SinglyLinkedList edgesList; //lista de aristas
+    public SinglyLinkedList<EdgeWeight> edgesList; //lista de aristas
 
     //Constructor
     public Vertex(Object data){

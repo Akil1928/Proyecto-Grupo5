@@ -14,7 +14,7 @@ module ucr.lab.proyectogrupo5 {
     opens security to javafx.fxml;
     exports security;
 
-    opens domain to javafx.base;
+    opens domain to javafx.base, com.google.gson;
     exports domain;
 
     opens datastructure.circular to javafx.fxml;
@@ -22,4 +22,6 @@ module ucr.lab.proyectogrupo5 {
 
     opens services to javafx.fxml;
     exports services;
+
+    opens persistence to com.google.gson;
 }

@@ -5,8 +5,8 @@
     "destination": "LAX",
     "departureTime": "2025-06-20T06:00:00",
     "capacity": 2,
-    "occupancy": 1,
-    "passengerIds": [右]
+    "occupancy": 0,
+    "passengerIds": []
   },
   {
     "number": 204,

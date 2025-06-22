@@ -81,4 +81,13 @@ public class AdminDashboardController {
             e.printStackTrace();
         }
     }
+    @FXML
+    void rutasOnAction(ActionEvent event) {
+        try {
+            Parent routeView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/routes.fxml")));
+            mainPane.setCenter(routeView);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
