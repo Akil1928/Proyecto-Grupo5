@@ -26,11 +26,6 @@ public class AirportService {
         return instance;
     }
 
-    /**
-     * Crear un nuevo aeropuerto
-     * @param airport El aeropuerto a crear
-     * @return true si se creó correctamente, false si ya existe un aeropuerto con el mismo código
-     */
     public boolean createAirport(Airport airport) {
         try {
             // Verificar si ya existe un aeropuerto con el mismo código
@@ -58,14 +53,6 @@ public class AirportService {
         }
     }
 
-    /**
-     * Actualizar los datos de un aeropuerto existente
-     * @param code Código del aeropuerto a actualizar
-     * @param name Nuevo nombre (o null para mantener el actual)
-     * @param country Nuevo país (o null para mantener el actual)
-     * @param status Nuevo estado (o null para mantener el actual)
-     * @return true si se actualizó correctamente, false si no se encontró el aeropuerto
-     */
     public boolean updateAirport(String code, String name, String country, String status) {
         try {
             System.out.println("AirportService.updateAirport: Intentando actualizar aeropuerto con código " + code);
@@ -114,11 +101,6 @@ public class AirportService {
         }
     }
 
-    /**
-     * Eliminar un aeropuerto
-     * @param code Código del aeropuerto a eliminar
-     * @return true si se eliminó correctamente, false si no se encontró el aeropuerto
-     */
     public boolean deleteAirport(String code) {
         try {
             System.out.println("AirportService.deleteAirport: Intentando eliminar aeropuerto con código " + code);
@@ -168,31 +150,16 @@ public class AirportService {
         }
     }
 
-    /**
-     * Activar un aeropuerto
-     * @param code Código del aeropuerto a activar
-     * @return true si se activó correctamente, false si no se encontró el aeropuerto
-     */
     public boolean activateAirport(String code) {
         System.out.println("AirportService.activateAirport: Cambiando estado a 'active' para " + code);
         return updateAirport(code, null, null, "active");
     }
 
-    /**
-     * Desactivar un aeropuerto
-     * @param code Código del aeropuerto a desactivar
-     * @return true si se desactivó correctamente, false si no se encontró el aeropuerto
-     */
     public boolean deactivateAirport(String code) {
         System.out.println("AirportService.deactivateAirport: Cambiando estado a 'inactive' para " + code);
         return updateAirport(code, null, null, "inactive");
     }
 
-    /**
-     * Listar todos los aeropuertos
-     * @param filter "active" para solo activos, "inactive" para solo inactivos, cualquier otro valor para todos
-     * @return Lista de aeropuertos según el filtro
-     */
     public SinglyLinkedList<Airport> listAirports(String filter) {
         SinglyLinkedList<Airport> filteredList = new SinglyLinkedList<>();
 
@@ -232,9 +199,6 @@ public class AirportService {
         return filteredList;
     }
 
-    /**
-     * Cargar aeropuertos iniciales
-     */
     public void loadInitialAirports() {
         System.out.println("AirportService.loadInitialAirports: Iniciando carga de aeropuertos");
 
@@ -261,9 +225,6 @@ public class AirportService {
         }
     }
 
-    /**
-     * Método de diagnóstico para imprimir todos los aeropuertos
-     */
     public void printAllAirports() {
         System.out.println("=== IMPRIMIENDO TODOS LOS AEROPUERTOS ===");
         try {
@@ -283,6 +244,13 @@ public class AirportService {
                 try {
                     Airport airport = (Airport) airports.getNode(i).data;
                     System.out.println(i + ": " + airport.getCode() + " - " + airport.getName() + " - " + airport.getStatus());
+
+                    // NUEVA VERIFICACIÓN: Comprobar que boardingQueue esté inicializada
+                    if (airport.getBoardingQueue() == null) {
+                        System.out.println("ADVERTENCIA: boardingQueue es null para " + airport.getCode());
+                    } else {
+                        System.out.println("boardingQueue inicializada correctamente para " + airport.getCode());
+                    }
                 } catch (Exception e) {
                     System.err.println("Error al acceder al aeropuerto " + i + ": " + e.getMessage());
                 }
@@ -293,12 +261,7 @@ public class AirportService {
         }
         System.out.println("======================================");
     }
-    // Agrega este método a tu clase AirportService
 
-    /**
-     * Guarda los aeropuertos en un archivo
-     * @return true si se guardó exitosamente, false en caso contrario
-     */
     public boolean saveAirports() {
         try {
             System.out.println("AirportService.saveAirports: Iniciando guardado de aeropuertos");
@@ -356,14 +319,12 @@ public class AirportService {
         }
     }
 
-    /**
-     * Carga aeropuertos desde archivo al iniciar el servicio
-     */
     public void loadAirports() {
         try {
             java.io.File file = new java.io.File("data/airports.json");
             if (!file.exists()) {
                 System.out.println("AirportService.loadAirports: Archivo no existe, usando aeropuertos iniciales");
+                loadInitialAirports(); // Cargar aeropuertos iniciales si no existe el archivo
                 return;
             }
 
@@ -379,6 +340,7 @@ public class AirportService {
             String jsonContent = content.toString().trim();
             if (jsonContent.isEmpty() || jsonContent.equals("[]")) {
                 System.out.println("AirportService.loadAirports: Archivo vacío, usando aeropuertos iniciales");
+                loadInitialAirports(); // Cargar aeropuertos iniciales si el archivo está vacío
                 return;
             }
 
@@ -403,10 +365,16 @@ public class AirportService {
                     String status = extractJsonValue(block, "status");
 
                     // Crear aeropuerto usando tu constructor
+                    // IMPORTANTE: Este constructor ya inicializa boardingQueue automáticamente
                     Airport airport = new Airport(code, name, country, status);
 
                     // Agregar a la lista
                     airports.add(airport);
+
+                    // Verificación opcional: comprobar que la cola esté inicializada
+                    if (airport.getBoardingQueue() == null) {
+                        System.err.println("ADVERTENCIA: boardingQueue no inicializada para " + code);
+                    }
 
                 } catch (Exception e) {
                     System.err.println("AirportService.loadAirports: Error procesando aeropuerto: " + e.getMessage());
@@ -414,6 +382,12 @@ public class AirportService {
             }
 
             System.out.println("AirportService.loadAirports: " + airports.size() + " aeropuertos cargados desde archivo");
+
+            // Si no se cargó ningún aeropuerto, cargar los iniciales
+            if (airports.isEmpty()) {
+                System.out.println("AirportService.loadAirports: No se cargaron aeropuertos, usando iniciales");
+                loadInitialAirports();
+            }
 
         } catch (Exception e) {
             System.err.println("AirportService.loadAirports: Error cargando aeropuertos: " + e.getMessage());
@@ -438,5 +412,32 @@ public class AirportService {
             System.err.println("Error extrayendo valor JSON para " + key + ": " + e.getMessage());
         }
         return "";
+    }
+
+    public Airport findAirportByCode(String code) {
+        try {
+            if (airports.isEmpty()) {
+                System.out.println("AirportService.findAirportByCode: La lista está vacía");
+                return null;
+            }
+
+            int size = airports.size();
+            for (int i = 1; i <= size; i++) {
+                Airport airport = (Airport) airports.getNode(i).data;
+                if (airport.getCode().equals(code)) {
+                    System.out.println("AirportService.findAirportByCode: Aeropuerto encontrado: " + code);
+                    return airport;
+                }
+            }
+
+            System.out.println("AirportService.findAirportByCode: No se encontró aeropuerto con código: " + code);
+            return null;
+        } catch (ListException e) {
+            System.err.println("AirportService.findAirportByCode: Error de lista: " + e.getMessage());
+            return null;
+        } catch (Exception e) {
+            System.err.println("AirportService.findAirportByCode: Error general: " + e.getMessage());
+            return null;
+        }
     }
 }

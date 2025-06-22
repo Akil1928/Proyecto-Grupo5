@@ -1,6 +1,8 @@
 package domain;
 
 import datastructure.list.SinglyLinkedList;
+import datastructure.queue.LinkedQueue;
+import domain.Passenger;
 
 public class Airport {
     private String code;
@@ -9,8 +11,13 @@ public class Airport {
     private String status; // "active" o "inactive"
     private SinglyLinkedList<Flight> departuresBoard;
 
+    // 1. Cola de espera de pasajeros
+    private LinkedQueue boardingQueue;
+
     public Airport() {
         this.departuresBoard = new SinglyLinkedList<>();
+        // Inicializar la cola de espera
+        this.boardingQueue = new LinkedQueue();
     }
 
     public Airport(String code, String name, String country, String status) {
@@ -19,6 +26,8 @@ public class Airport {
         this.country = country;
         this.status = status;
         this.departuresBoard = new SinglyLinkedList<>();
+        // Inicializar la cola de espera
+        this.boardingQueue = new LinkedQueue();
     }
 
     // Getters y setters
@@ -60,6 +69,11 @@ public class Airport {
 
     public void setDeparturesBoard(SinglyLinkedList<Flight> departuresBoard) {
         this.departuresBoard = departuresBoard;
+    }
+
+    // Getter corregido para la cola de espera de pasajeros
+    public LinkedQueue getBoardingQueue() {
+        return boardingQueue;
     }
 
     @Override
