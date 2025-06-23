@@ -367,11 +367,12 @@ public class SearchFlightController implements Initializable {
     @FXML
     private void handleBack(ActionEvent event) {
         try {
-            Parent dashboard = FXMLLoader.load(getClass().getResource("/dashboard.fxml"));
+            // Cambiar a userDashboard.fxml
+            Parent dashboard = FXMLLoader.load(getClass().getResource("/userDashboard.fxml"));
             BorderPane root = (BorderPane) ((Button) event.getSource()).getScene().getRoot();
             root.setCenter(dashboard);
         } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar el dashboard: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo regresar al dashboard: " + e.getMessage());
         }
     }
 

@@ -5,8 +5,8 @@
     "destination": "LAX",
     "departureTime": "2025-06-20T06:00:00",
     "capacity": 2,
-    "occupancy": 0,
-    "passengerIds": []
+    "occupancy": 2,
+    "passengerIds": [右, 첻]
   },
   {
     "number": 204,
@@ -14,7 +14,16 @@
     "destination": "JFK",
     "departureTime": "2025-06-18T12:00:00",
     "capacity": 1,
+    "occupancy": 0,
+    "passengerIds": []
+  },
+  {
+    "number": 205,
+    "origin": "SJO",
+    "destination": "MEX",
+    "departureTime": "2025-06-26T05:00:00",
+    "capacity": 5,
     "occupancy": 1,
-    "passengerIds": [右]
+    "passengerIds": [첻]
   }
 ]

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.SearchFlightController"
+      spacing="20"
+      style="-fx-padding: 20; -fx-background-color: #f5f9ff;">
+
+    <!-- Encabezado -->
+    <Label text="Buscar Vuelos" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+    <Text text="Encuentre el vuelo perfecto para su próximo viaje" style="-fx-fill: #555;"/>
+    <Separator/>
+
+    <!-- Formulario de Búsqueda -->
+    <GridPane hgap="15" vgap="15" style="-fx-padding: 0 0 20 0;">
+        <Label text="Origen:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="originComboBox" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="200"/>
+
+        <Label text="Destino:" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+        <ComboBox fx:id="destinationComboBox" GridPane.rowIndex="0" GridPane.columnIndex="3" prefWidth="200"/>
+
+        <Label text="Fecha de Salida:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="departureDatePicker" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Pasajero:" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+        <ComboBox fx:id="passengerComboBox" GridPane.rowIndex="1" GridPane.columnIndex="3" prefWidth="200"/>
+
+        <Button fx:id="searchButton" text="Buscar Vuelos" GridPane.rowIndex="2" GridPane.columnIndex="3"
+                style="-fx-background-color: #4a7bff; -fx-text-fill: white; -fx-font-weight: bold;"
+                onAction="#handleSearchFlights"/>
+    </GridPane>
+
+    <!-- Etiqueta de resultados -->
+    <Label fx:id="searchResultsLabel" text="Resultados: 0 vuelos encontrados"
+           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+
+    <!-- Resultados de Búsqueda -->
+    <Label text="Resultados de Búsqueda" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    <TableView fx:id="flightSearchTable" prefHeight="300">
+        <columns>
+            <TableColumn text="Vuelo" fx:id="flightNumberColumn" prefWidth="80"/>
+            <TableColumn text="Origen" fx:id="originColumn" prefWidth="120"/>
+            <TableColumn text="Destino" fx:id="destinationColumn" prefWidth="120"/>
+            <TableColumn text="Salida" fx:id="departureTimeColumn" prefWidth="150"/>
+            <TableColumn text="Asientos Disp." fx:id="availableSeatsColumn" prefWidth="100"/>
+            <TableColumn text="Estado" fx:id="statusColumn" prefWidth="100"/>
+        </columns>
+    </TableView>
+
+    <!-- Pie de página -->
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button text="Volver" onAction="#handleBack"/>
+        <Button text="Limpiar" onAction="#handleClearSearch"/>
+        <Button fx:id="purchaseButton" text="Comprar Boleto"
+                style="-fx-background-color: #28a745; -fx-text-fill: white;"
+                onAction="#handlePurchaseTicket"/>
+    </HBox>
+</VBox>

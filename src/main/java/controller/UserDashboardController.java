@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import security.UserManager;
 
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -103,13 +104,11 @@ public class UserDashboardController {
 
     @FXML
     public void handleViewAirports(ActionEvent event) {
-        System.out.println("Loading airport view for user...");
         loadView("/userAirportView.fxml", "vista de aeropuertos");
     }
 
     @FXML
     public void handleViewFlights(ActionEvent event) {
-        System.out.println("View flights menu item clicked");
         loadView("/userFlightView.fxml", "vista de vuelos");
     }
 
@@ -121,7 +120,6 @@ public class UserDashboardController {
 
     @FXML
     public void handleMyProfile(ActionEvent event) {
-        System.out.println("My profile menu item clicked");
         loadView("/userProfile.fxml", "perfil de usuario");
     }
 
@@ -155,31 +153,22 @@ public class UserDashboardController {
         loadView("/userSettings.fxml", "configuración");
     }
 
-    /**
-     * Método helper para cargar vistas de manera consistente
-     */
     private void loadView(String fxmlPath, String viewName) {
         try {
-            Parent view = FXMLLoader.load(Objects.requireNonNull(
-                    getClass().getResource(fxmlPath)));
+            URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                throw new IOException("Recurso no encontrado: " + fxmlPath);
+            }
+
+            Parent view = FXMLLoader.load(resource);
             mainPane.setCenter(view);
-            System.out.println(viewName + " loaded successfully");
+            System.out.println(viewName + " cargada exitosamente");
+
         } catch (IOException e) {
-            System.err.println("Error loading " + viewName + ": " + e.getMessage());
+            System.err.println("Error cargando " + viewName + ": " + e.getMessage());
             showErrorAlert("Error de Carga",
-                    "No se pudo cargar " + viewName + ".",
-                    "La funcionalidad estará disponible próximamente.");
-        } catch (NullPointerException e) {
-            System.err.println("FXML file not found: " + fxmlPath);
-            showInfoAlert("Función en Desarrollo",
-                    "La función '" + viewName + "' está en desarrollo.",
-                    "Estará disponible en una próxima actualización.");
-        } catch (Exception e) {
-            System.err.println("Unexpected error loading " + viewName + ": " + e.getMessage());
-            e.printStackTrace();
-            showErrorAlert("Error Inesperado",
-                    "Ocurrió un error inesperado.",
-                    "Por favor, inténtelo de nuevo más tarde.");
+                    "No se pudo cargar " + viewName,
+                    "Ruta: " + fxmlPath + "\nError: " + e.getMessage());
         }
     }
 
