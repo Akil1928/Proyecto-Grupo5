@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PurchaseController">
+    <children>
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: #2c3e50; -fx-padding: 15;">
+            <children>
+                <Label text="✈" textFill="WHITE">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
+                <Label text="Compra de Tiquetes" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button mnemonicParsing="false" onAction="#handleBack" style="-fx-background-color: #34495e; -fx-text-fill: white;" text="← Regresar" />
+            </children>
+        </HBox>
+
+        <!-- Main Content -->
+        <HBox spacing="15.0" VBox.vgrow="ALWAYS">
+            <children>
+                <!-- Left Panel - Flight Selection -->
+                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label text="Vuelos Disponibles">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Label>
+
+                        <TableView fx:id="availableFlightsTable" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="flightNumberColumn" prefWidth="80.0" text="Vuelo" />
+                                <TableColumn fx:id="originColumn" prefWidth="80.0" text="Origen" />
+                                <TableColumn fx:id="destinationColumn" prefWidth="80.0" text="Destino" />
+                                <TableColumn fx:id="departureTimeColumn" prefWidth="120.0" text="Salida" />
+                                <TableColumn fx:id="capacityColumn" prefWidth="80.0" text="Capacidad" />
+                                <TableColumn fx:id="availableSeatsColumn" prefWidth="80.0" text="Disponibles" />
+                            </columns>
+                        </TableView>
+
+                        <!-- Purchase Controls -->
+                        <VBox spacing="10.0" style="-fx-background-color: #ecf0f1; -fx-padding: 15; -fx-background-radius: 5;">
+                            <children>
+                                <Label text="Seleccionar Pasajero:">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <ComboBox fx:id="passengerComboBox" maxWidth="1.7976931348623157E308" />
+
+                                <HBox spacing="10.0">
+                                    <children>
+                                        <Button fx:id="purchaseButton" onAction="#handlePurchaseTicket" style="-fx-background-color: #27ae60; -fx-text-fill: white;" text="Comprar Tiquete" />
+                                        <Button onAction="#handleRefresh" style="-fx-background-color: #3498db; -fx-text-fill: white;" text="Actualizar" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="7.5" top="15.0" />
+                    </padding>
+                </VBox>
+
+                <!-- Right Panel - Queue Management -->
+                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label text="Gestión de Colas">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Label>
+
+                        <VBox spacing="10.0" style="-fx-background-color: #ecf0f1; -fx-padding: 15; -fx-background-radius: 5;">
+                            <children>
+                                <Label text="Estado de Lista de Espera:">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+
+                                <TextArea fx:id="queueStatusArea" editable="false" prefHeight="200.0" wrapText="true" />
+
+                                <HBox spacing="10.0">
+                                    <children>
+                                        <Button fx:id="viewQueueButton" onAction="#handleViewQueue" style="-fx-background-color: #f39c12; -fx-text-fill: white;" text="Ver Cola" />
+                                        <Button fx:id="processQueueButton" onAction="#handleProcessQueue" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Procesar Cola" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+
+                        <!-- Instructions -->
+                        <VBox spacing="5.0" style="-fx-background-color: #d5dbdb; -fx-padding: 10; -fx-background-radius: 5;">
+                            <children>
+                                <Label text="Instrucciones:" textFill="#2c3e50">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                </Label>
+                                <Label text="1. Seleccione un vuelo de la tabla" textFill="#2c3e50" wrapText="true" />
+                                <Label text="2. Seleccione un pasajero" textFill="#2c3e50" wrapText="true" />
+                                <Label text="3. Haga clic en 'Comprar Tiquete'" textFill="#2c3e50" wrapText="true" />
+                                <Label text="4. Si el vuelo está lleno, el pasajero se agregará a la lista de espera" textFill="#2c3e50" wrapText="true" />
+                                <Label text="5. Use 'Procesar Cola' para mover pasajeros de la lista de espera al vuelo" textFill="#2c3e50" wrapText="true" />
+                            </children>
+                        </VBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="15.0" left="7.5" right="15.0" top="15.0" />
+                    </padding>
+                </VBox>
+            </children>
+        </HBox>
+
+        <!-- Status Bar -->
+        <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-background-color: #95a5a6; -fx-padding: 5 15;">
+            <children>
+                <Label fx:id="statusLabel" text="Listo para comprar tiquetes" textFill="WHITE">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                </Label>
+            </children>
+        </HBox>
+    </children>
+</VBox>

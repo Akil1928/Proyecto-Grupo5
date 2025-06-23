@@ -128,7 +128,7 @@ public class UserDashboardController {
     @FXML
     public void handleMyFlights(ActionEvent event) {
         System.out.println("My flights menu item clicked");
-        loadView("/userFlights.fxml", "mis vuelos");
+        loadView("/MyFlights.fxml", "mis vuelos");
     }
 
     @FXML

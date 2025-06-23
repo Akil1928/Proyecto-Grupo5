@@ -125,4 +125,11 @@ public class Flight {
         return removed;
     }
 
+    public Passenger getPassenger(int i) {
+        if (i >= 0 && i < passengers.size()) {
+            return passengers.get(i);
+        } else {
+            return null;
+        }
+    }
 }

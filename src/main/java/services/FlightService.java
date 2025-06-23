@@ -30,13 +30,14 @@ public class FlightService {
     }
 
     // ========== NUEVO MÉTODO: COMPRA DE TIQUETES CON ENCOLADO ==========
+
     /**
      * Trata de vender un tiquete a un pasajero.
      * Si el vuelo tiene espacio, agrega al pasajero directamente.
      * Si está lleno, encola al pasajero en el aeropuerto de origen.
      *
      * @param flightNumber Número del vuelo
-     * @param passenger Pasajero que compra el tiquete
+     * @param passenger    Pasajero que compra el tiquete
      * @return true si se agregó al vuelo; false si quedó en cola
      * @throws IllegalArgumentException si el vuelo no existe
      */
@@ -106,6 +107,7 @@ public class FlightService {
     }
 
     // ========== NUEVO MÉTODO: OBTENER ESTADO DE COLA ==========
+
     /**
      * Obtiene información sobre la cola de embarque de un vuelo
      *
@@ -129,6 +131,7 @@ public class FlightService {
     }
 
     // ========== NUEVO MÉTODO: LIMPIAR COLA ==========
+
     /**
      * Limpia la cola de embarque de un aeropuerto específico
      *
@@ -155,6 +158,7 @@ public class FlightService {
     }
 
     // ========== MÉTODO MEJORADO: BUSCAR VUELO ==========
+
     /**
      * Busca un vuelo por número (versión pública para uso externo)
      */
@@ -243,12 +247,36 @@ public class FlightService {
             // Antes de simular, procesar cola si hay pasajeros esperando
             int processed = processFlightQueue(flightNumber);
             if (processed > 0) {
-                System.out.println("🎫 Procesados " + processed + " pasajeros desde cola antes del vuelo");
+                System.out.println("Procesados " + processed + " pasajeros desde cola antes del vuelo");
             }
 
             // Marcar como completado
             saveFlights();
-            System.out.println("✈️ Vuelo #" + flightNumber + " simulado exitosamente");
+            System.out.println("Vuelo #" + flightNumber + " simulado exitosamente");
         }
+    }
+
+    public boolean removePassengerFromFlight(Flight selectedFlight, Passenger selectedPassenger) {
+        if (selectedFlight == null || selectedPassenger == null) {
+            return false;
+        }
+
+        // Verificar que el vuelo exista en nuestra lista
+        Flight flight = findFlight(selectedFlight.getNumber());
+        if (flight == null) {
+            return false;
+        }
+
+        // Intentar eliminar el pasajero del vuelo
+        boolean removed = flight.removePassenger(selectedPassenger);
+
+        // Si se eliminó correctamente, guardar los cambios
+        if (removed) {
+            saveFlights();
+            System.out.println("✓ Pasajero " + selectedPassenger.getName() +
+                    " eliminado del vuelo " + flight.getNumber());
+        }
+
+        return removed;
     }
 }
