@@ -136,7 +136,7 @@
                             </font>
                         </Label>
                         <Label styleClass="label section-header" text="Reportes y Análisis" textAlignment="CENTER" wrapText="true" />
-                        <Button styleClass="button" text="Acceder" />
+                        <Button onAction="#handleGenerateReports" styleClass="button" text="Acceder" />
                     </VBox>
 
                     <VBox alignment="CENTER" prefHeight="150.0" prefWidth="200.0" spacing="15.0" styleClass="card" GridPane.columnIndex="2" GridPane.rowIndex="1">
@@ -151,15 +151,15 @@
                         <Label styleClass="label section-header" text="Configuración" textAlignment="CENTER" wrapText="true" />
                         <Button styleClass="button" text="Acceder" />
                     </VBox>
-               <columnConstraints>
-                  <ColumnConstraints />
-                  <ColumnConstraints />
-                  <ColumnConstraints />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints />
-                  <RowConstraints />
-               </rowConstraints>
+                    <columnConstraints>
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                    </rowConstraints>
                 </GridPane>
             </VBox>
 

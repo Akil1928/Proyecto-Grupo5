@@ -172,6 +172,32 @@ public class UserDashboardController {
         }
     }
 
+    /**
+     * Maneja la acción de generar reportes estadísticos
+     */
+
+    // Agregar este nuevo método
+    @FXML
+    public void handleGenerateReports(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/reportView.fxml"));
+            Parent reportView = loader.load();
+
+            Stage reportStage = new Stage();
+            reportStage.setTitle("Generador de Reportes");
+            reportStage.setScene(new Scene(reportView, 500, 400));
+
+            // Pasar la referencia del stage al controlador
+            ReportController controller = loader.getController();
+            controller.setStage(reportStage);
+
+            reportStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "No se pudo abrir el generador de reportes", e.getMessage());
+        }
+    }
+
     @FXML
     public void handleLogout(ActionEvent event) {
         System.out.println("Logout menu item clicked");

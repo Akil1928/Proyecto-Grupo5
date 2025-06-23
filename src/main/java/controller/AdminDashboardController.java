@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import security.UserManager;
@@ -35,6 +36,35 @@ public class AdminDashboardController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    @FXML
+    private void handleGenerateReports(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/reportView.fxml"));
+            Parent reportView = loader.load();
+
+            Stage reportStage = new Stage();
+            reportStage.setTitle("Generador de Reportes");
+            reportStage.setScene(new Scene(reportView, 500, 400));
+
+            // Pasar la referencia del stage al controlador
+            ReportController controller = loader.getController();
+            controller.setStage(reportStage);
+
+            reportStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "No se pudo abrir el generador de reportes", e.getMessage());
+        }
+    }
+
+    // Método para mostrar alertas de error
+    private void showErrorAlert(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     @FXML

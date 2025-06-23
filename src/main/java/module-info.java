@@ -4,6 +4,7 @@ module ucr.lab.proyectogrupo5 {
     requires com.google.gson;
     requires com.fasterxml.jackson.databind;
     requires java.desktop;
+    requires itextpdf;
 
     opens ucr.lab.app to javafx.fxml;
     exports ucr.lab.app;

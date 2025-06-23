@@ -218,15 +218,13 @@ public class PersonService {
     }
 
     // Convertir a lista para compatibilidad con otros sistemas
-    public List<Passenger> getPassengersList() {
+    public List<Passenger> getAllPassengersList() throws ListException {
+        SinglyLinkedList<Passenger> passengers = getAllPassengers();
         List<Passenger> list = new ArrayList<>();
         for (int i = 0; i < passengers.size(); i++) {
-            try {
-                list.add(passengers.get(i));
-            } catch (ListException e) {
-                throw new RuntimeException(e);
-            }
+            list.add(passengers.get(i));
         }
         return list;
     }
 }
+
