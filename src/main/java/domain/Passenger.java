@@ -2,6 +2,8 @@ package domain;
 
 import datastructure.list.SinglyLinkedList;
 
+import java.util.Objects;
+
 public class Passenger {
     private int id;
     private String name, nationality;
@@ -37,10 +39,14 @@ public class Passenger {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Passenger)) return false;
-        Passenger p = (Passenger) obj;
-        return this.id == p.id;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Passenger passenger = (Passenger) o;
+        return id == passenger.id;
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

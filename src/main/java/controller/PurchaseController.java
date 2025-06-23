@@ -163,7 +163,10 @@ public class PurchaseController implements Initializable {
             }
 
             // Intentar comprar el tiquete
-            boolean success = queueService.purchaseTicket(selectedFlight, selectedPassenger);
+            boolean success = flightService.addPassengerToFlight(
+                    selectedFlight.getNumber(),
+                    selectedPassenger
+            );
 
             if (success) {
                 showAlert("Éxito",

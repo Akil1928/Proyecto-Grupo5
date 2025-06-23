@@ -151,22 +151,13 @@ public class MyFlightsController implements Initializable {
 
     private void loadPassengerFlights() {
         passengerFlights.clear();
-
         if (selectedPassenger == null) return;
 
-        // Buscar vuelos donde aparece el pasajero
-        List<Flight> allFlights = flightService.getAllFlights();
+        // Usar un servicio directo en lugar de filtrar manualmente
+        List<Flight> flights = flightService.getFlightsByPassenger(selectedPassenger.getId());
+        passengerFlights.addAll(flights);
 
-        for (Flight flight : allFlights) {
-            if (flight.getPassengers().contains(selectedPassenger)) {
-                passengerFlights.add(flight);
-            }
-        }
-
-        // Actualizar contador
         flightCountLabel.setText("Vuelos encontrados: " + passengerFlights.size());
-
-        // Generar historial detallado
         generateFlightHistory();
     }
 

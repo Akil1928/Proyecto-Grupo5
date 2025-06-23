@@ -184,16 +184,17 @@ public class FlightService {
         return flight;
     }
 
-    // Método para agregar un pasajero al vuelo (método directo sin cola)
     public boolean addPassengerToFlight(int flightNumber, Passenger passenger) {
         Flight flight = findFlight(flightNumber);
-        if (flight != null) {
-            boolean added = flight.addPassenger(passenger);
-            if (added) {
-                // Guardar los cambios en el archivo
-                saveFlights();
+        if (flight != null && !flight.isFull()) {
+            // Verificar si el pasajero ya está en el vuelo
+            if (!flight.getPassengers().contains(passenger)) {
+                boolean added = flight.addPassenger(passenger);
+                if (added) {
+                    saveFlights();  // Guardar cambios
+                    return true;
+                }
             }
-            return added;
         }
         return false;
     }
@@ -218,7 +219,18 @@ public class FlightService {
         }
         return activeFlights;
     }
-
+    public List<Flight> getFlightsByPassenger(int passengerId) {
+        List<Flight> result = new ArrayList<>();
+        for (Flight flight : flightList) {
+            for (Passenger p : flight.getPassengers()) {
+                if (p.getId() == passengerId) {
+                    result.add(flight);
+                    break;
+                }
+            }
+        }
+        return result;
+    }
     // Obtener vuelos completados
     public List<Flight> getCompletedFlights() {
         List<Flight> completedFlights = new ArrayList<>();
@@ -279,4 +291,5 @@ public class FlightService {
 
         return removed;
     }
+
 }

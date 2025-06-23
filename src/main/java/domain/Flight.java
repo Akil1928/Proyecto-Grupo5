@@ -27,13 +27,15 @@ public class Flight {
 
     // Métodos para agregar pasajeros
     public boolean addPassenger(Passenger passenger) {
-        if (occupancy < capacity) {
-            passengers.add(passenger);
-            occupancy++;
-            return true;
-        } else {
-            return false;  // El vuelo está lleno
+        // Verificar si el pasajero ya existe
+        if (!passengers.contains(passenger)) {
+            if (occupancy < capacity) {
+                passengers.add(passenger);
+                occupancy = passengers.size();  // Mantener consistencia
+                return true;
+            }
         }
+        return false;
     }
 
     // Métodos getter y setter
