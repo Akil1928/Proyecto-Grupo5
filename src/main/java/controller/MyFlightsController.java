@@ -6,10 +6,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import domain.Flight;
 import domain.Passenger;
@@ -352,23 +356,26 @@ public class MyFlightsController implements Initializable {
             }
         }
     }
-
     @FXML
     private void handleBack(ActionEvent event) {
         try {
-            // Cargar la vista del portal de usuario
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserPortal.fxml"));
+            // Usar la ruta exacta que aparece en los logs
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/userdashboard.fxml"));
             Parent root = loader.load();
 
-            // Obtener la ventana actual y cambiar la escena
-            BorderPane borderPane = (BorderPane) passengerComboBox.getScene().getRoot();
-            borderPane.setCenter(root);
+            // Obtener el Stage actual y establecer la nueva escena
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+
+            System.out.println("Navegación exitosa al dashboard de usuario");
         } catch (IOException e) {
+            e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Error",
-                    "No se pudo regresar al portal de usuario: " + e.getMessage());
+                    "No se pudo volver al panel de usuario: " + e.getMessage());
         }
     }
-
     private void showAlert(Alert.AlertType alertType, String title, String content) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
