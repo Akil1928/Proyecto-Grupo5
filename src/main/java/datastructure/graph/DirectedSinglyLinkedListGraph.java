@@ -2,12 +2,13 @@ package datastructure.graph;
 
 import datastructure.list.ListException;
 import datastructure.list.SinglyLinkedList;
+import domain.Airport;
 
 public class DirectedSinglyLinkedListGraph implements Graph {
     private Vertex[] vertexList;
     private int n;
     private int counter;
-
+    SinglyLinkedList<Vertex> vertices;
     public DirectedSinglyLinkedListGraph(int n) {
         this.n = n;
         this.counter = 0;
@@ -144,7 +145,7 @@ public class DirectedSinglyLinkedListGraph implements Graph {
         }
     }
 
-    private int indexOf(Object element) {
+    public int indexOf(Object element) {
         for (int i = 0; i < counter; i++) {
             if (vertexList[i].data.equals(element)) {
                 return i;
@@ -391,4 +392,25 @@ public class DirectedSinglyLinkedListGraph implements Graph {
 
         return sb.toString();
     }
+
+    public int countConnectedComponents() {
+        return 1;
+    }
+
+    public SinglyLinkedList<Airport> getVertices() {
+        SinglyLinkedList<Airport> list = new SinglyLinkedList<>();
+        try {
+            for (int i = 0; i < counter; i++) {
+                Object data = vertexList[i].data;
+                if (data instanceof Airport airport) {
+                    list.add(airport);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error al construir lista de vértices: " + e.getMessage());
+        }
+        return list;
+    }
+
+
 }

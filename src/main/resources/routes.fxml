@@ -4,18 +4,16 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RouteController">
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RoutesController">
     <top>
         <VBox alignment="CENTER" BorderPane.alignment="CENTER">
             <children>
@@ -23,97 +21,117 @@
                     <font>
                         <Font name="System Bold" size="24.0" />
                     </font>
-                    <VBox.margin>
-                        <Insets bottom="10.0" top="10.0" />
-                    </VBox.margin>
                 </Label>
             </children>
+            <padding>
+                <Insets bottom="10.0" top="10.0" />
+            </padding>
         </VBox>
     </top>
     <center>
-        <VBox alignment="TOP_CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+        <VBox spacing="10.0" BorderPane.alignment="CENTER">
             <children>
-                <TableView fx:id="routeTable" prefHeight="250.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+                <TableView fx:id="routesTable" prefHeight="300.0">
                     <columns>
-                        <TableColumn fx:id="originColumn" prefWidth="150.0" text="Origen" />
-                        <TableColumn fx:id="destinationColumn" prefWidth="150.0" text="Destino" />
+                        <TableColumn fx:id="originColumn" prefWidth="200.0" text="Origen" />
+                        <TableColumn fx:id="destinationColumn" prefWidth="200.0" text="Destino" />
                         <TableColumn fx:id="distanceColumn" prefWidth="100.0" text="Distancia (km)" />
                     </columns>
                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </VBox.margin>
                 </TableView>
 
-                <!-- Sección para calcular ruta más corta -->
-                <VBox alignment="CENTER" spacing="10.0" style="-fx-border-color: #cccccc; -fx-border-radius: 5;">
-                    <VBox.margin>
+                <Separator />
+
+                <!-- Sección para añadir/editar rutas -->
+                <VBox spacing="10.0">
+                    <Label text="Añadir o Modificar Ruta" style="-fx-font-weight: bold;">
+                        <VBox.margin>
+                            <Insets left="5.0" />
+                        </VBox.margin>
+                    </Label>
+
+                    <HBox spacing="10.0" alignment="CENTER_LEFT">
+                        <Label text="Origen:" prefWidth="80.0" />
+                        <ComboBox fx:id="originComboBox" prefWidth="200.0" />
+                    </HBox>
+
+                    <HBox spacing="10.0" alignment="CENTER_LEFT">
+                        <Label text="Destino:" prefWidth="80.0" />
+                        <ComboBox fx:id="destinationComboBox" prefWidth="200.0" />
+                    </HBox>
+
+                    <HBox spacing="10.0" alignment="CENTER_LEFT">
+                        <Label text="Distancia:" prefWidth="80.0" />
+                        <TextField fx:id="distanceField" prefWidth="100.0" />
+                        <Label text="km" />
+                    </HBox>
+
+                    <HBox spacing="10.0">
+                        <Button onAction="#handleAddRoute" text="Añadir/Modificar Ruta" />
+                        <Button onAction="#handleRemoveRoute" text="Eliminar Ruta" />
+                        <Button onAction="#handleClearFields" text="Limpiar Campos" />
+                        <Button onAction="#handleSaveChanges" text="Guardar Cambios" />
+                    </HBox>
+
+                    <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                    </VBox.margin>
-                    <children>
-                        <Label text="Calcular Ruta Más Corta (Dijkstra)" textAlignment="CENTER">
-                            <font>
-                                <Font name="System Bold" size="14.0" />
-                            </font>
+                    </padding>
+                </VBox>
+
+                <Separator />
+
+                <!-- Sección para buscar rutas -->
+                <VBox spacing="10.0">
+                    <Label text="Encontrar Mejor Ruta" style="-fx-font-weight: bold;">
+                        <VBox.margin>
+                            <Insets left="5.0" />
+                        </VBox.margin>
+                    </Label>
+
+                    <HBox spacing="10.0" alignment="CENTER_LEFT">
+                        <Label text="Desde:" prefWidth="80.0" />
+                        <ComboBox fx:id="sourceAirportCombo" prefWidth="200.0" />
+                    </HBox>
+
+                    <HBox spacing="10.0" alignment="CENTER_LEFT">
+                        <Label text="Hasta:" prefWidth="80.0" />
+                        <ComboBox fx:id="targetAirportCombo" prefWidth="200.0" />
+                    </HBox>
+
+                    <HBox spacing="10.0">
+                        <Button fx:id="findRouteButton" onAction="#handleFindRoute" text="Buscar Mejor Ruta" />
+                        <Button onAction="#handleAnalyzeConnectivity" text="Analizar Conectividad" />
+                    </HBox>
+
+                    <VBox fx:id="resultsContainer" visible="false" spacing="5.0">
+                        <Label text="Mejor Ruta:" style="-fx-font-weight: bold;" />
+                        <Label fx:id="routeResultLabel" wrapText="true" />
+                        <Label text="Distancia Total:" style="-fx-font-weight: bold;">
+                            <VBox.margin>
+                                <Insets top="5.0" />
+                            </VBox.margin>
                         </Label>
-                        <HBox alignment="CENTER" spacing="15.0">
-                            <children>
-                                <Label text="Origen:" />
-                                <ComboBox fx:id="originPathCombo" prefWidth="150.0" />
-                                <Label text="Destino:" />
-                                <ComboBox fx:id="destinationPathCombo" prefWidth="150.0" />
-                                <Button mnemonicParsing="false" onAction="#handleCalculatePath" text="Calcular" />
-                            </children>
-                        </HBox>
-                        <Label fx:id="pathResultLabel" text="Resultado se mostrará aquí" wrapText="true" />
-                    </children>
+                        <Label fx:id="distanceResultLabel" />
+                    </VBox>
+
                     <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                     </padding>
                 </VBox>
             </children>
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
         </VBox>
     </center>
     <bottom>
-        <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
-            <children>
-                <GridPane alignment="CENTER" hgap="10.0" vgap="10.0">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="10.0" prefWidth="300.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                    <children>
-                        <Label text="Origen:" />
-                        <Label text="Destino:" GridPane.rowIndex="1" />
-                        <Label text="Distancia (km):" GridPane.rowIndex="2" />
-                        <ComboBox fx:id="originComboBox" prefWidth="300.0" GridPane.columnIndex="1" />
-                        <ComboBox fx:id="destinationComboBox" prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <TextField fx:id="distanceField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                    </children>
-                    <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                    </VBox.margin>
-                </GridPane>
-                <HBox alignment="CENTER" spacing="20.0">
-                    <children>
-                        <Button fx:id="addButton" mnemonicParsing="false" onAction="#handleAddRoute" text="Agregar Ruta" />
-                        <Button fx:id="updateButton" mnemonicParsing="false" onAction="#handleUpdateRoute" text="Modificar Ruta" />
-                        <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDeleteRoute" text="Eliminar Ruta" />
-                        <Button fx:id="clearButton" mnemonicParsing="false" onAction="#handleClearForm" text="Limpiar" />
-                    </children>
-                    <VBox.margin>
-                        <Insets bottom="10.0" top="10.0" />
-                    </VBox.margin>
-                </HBox>
-                <Button mnemonicParsing="false" onAction="#regresarOnAction" text="REGRESAR" />
-            </children>
+        <HBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+            <Button onAction="#regresarOnAction" text="REGRESAR" />
             <padding>
-                <Insets bottom="20.0" />
+                <Insets bottom="10.0" top="10.0" />
             </padding>
-        </VBox>
+        </HBox>
     </bottom>
 </BorderPane>
